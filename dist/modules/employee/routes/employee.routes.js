@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.employeeRoutes = void 0;
+const express_1 = require("express");
+const ListEmployeeController_1 = require("../useCases/listEmployee/ListEmployeeController");
+const AuthenticateEmployeeController_1 = require("../authenticateEmployee/AuthenticateEmployeeController");
+const CreateEmployeeController_1 = require("../useCases/createEmployee/CreateEmployeeController");
+const employeeRoutes = (0, express_1.Router)();
+exports.employeeRoutes = employeeRoutes;
+const createEmployeeController = new CreateEmployeeController_1.CreateEmployeeController();
+const listEmployeesController = new ListEmployeeController_1.ListEmployeesController();
+const authenticateEmployeeController = new AuthenticateEmployeeController_1.AuthenticateEmployeeController();
+employeeRoutes.post("/", (req, res) => createEmployeeController.handle(req, res));
+employeeRoutes.get("/", (req, res) => listEmployeesController.handle(req, res));
+employeeRoutes.post("/login", (req, res) => authenticateEmployeeController.handle(req, res));

@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.enterpriseRoutes = void 0;
+const express_1 = require("express");
+const CreateEnterpriseControler_1 = require("../useCases/createEnterprise/CreateEnterpriseControler");
+const ListEnterprisesController_1 = require("../useCases/listEnterprise/ListEnterprisesController");
+const enterpriseRoutes = (0, express_1.Router)();
+exports.enterpriseRoutes = enterpriseRoutes;
+const createEnterpriseController = new CreateEnterpriseControler_1.CreateEnterpriseController();
+const listEnterprisesController = new ListEnterprisesController_1.ListEnterprisesController();
+enterpriseRoutes.post("/", (req, res) => createEnterpriseController.handle(req, res));
+enterpriseRoutes.get("/", (req, res) => listEnterprisesController.handle(req, res));
