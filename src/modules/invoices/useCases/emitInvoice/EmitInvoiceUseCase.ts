@@ -1,37 +1,42 @@
 import NFeWizard from "nfewizard-io";
-import * as fs from "fs";
 import * as path from "path";
+import * as fs from "fs";
 
 export class EmitInvoiceUseCase {
   async execute() {
-    // Caminho do certificado
-    const certPath = path.resolve(
-      __dirname,
-      "../../../../../certs/certificado2024.pfx"
-    );
+    const certPath = path.join(process.cwd(), "certs", "certificado2024.pfx");
+
+    console.log("Caminho do certificado:", certPath);
+    console.log("Arquivo existe?", fs.existsSync(certPath));
 
     if (!fs.existsSync(certPath)) {
       throw new Error(`❌ Certificado não encontrado em: ${certPath}`);
     }
 
-    const cert = fs.readFileSync(certPath);
-
-    // Instancia o NFeWizard
     const wizard = new NFeWizard();
 
-    // Carrega o ambiente e certificado
     await wizard.NFE_LoadEnvironment({
       config: {
-        cnpjEmitente: "12345678000199",
-        pfx: cert.toString("base64"), // 🔹 normalmente é base64
-        password: "12345678",
-        ambiente: "homologacao",
-        uf: "SP",
-        versao: "4.00",
+        dfe: {
+          pathCertificado:
+            "/Users/prosysteminformatica/Documents/dev/visual/yachid/yachidBackEnd/certs/certificado2024.pfx",
+          senhaCertificado: "12345678",
+          UF: "SP",
+          CPFCNPJ: "12345678000199",
+          armazenarXMLAutorizacao: false,
+        },
+        nfe: {
+          ambiente: 2,
+          versaoDF: "4.00",
+        },
+        lib: {
+          useOpenSSL: true,
+        },
       },
     });
 
-    // Monta os dados da NFe
+    console.log("Ambiente NFe carregado com sucesso!");
+
     const nfeData = {
       ide: {
         cUF: 35,
@@ -120,15 +125,13 @@ export class EmitInvoiceUseCase {
       },
     };
 
-    // Autorização da NFe
-    console.log("🚀 Enviando NFe para autorização...");
+    console.log("Enviando NFe para autorização...");
     const result = await wizard.NFE_Autorizacao(nfeData);
 
-    console.log("✅ Resultado da SEFAZ:", result);
+    console.log("Resultado da SEFAZ:", result);
   }
 }
 
-// Execução direta
 (async () => {
   const useCase = new EmitInvoiceUseCase();
   await useCase.execute();
