@@ -7,4 +7,5 @@ export interface ICreateCustomerDTO {
   status: boolean;
   restriction: boolean;
   credit?: number | null;
+  address?: string | null;
 }

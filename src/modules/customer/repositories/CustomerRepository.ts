@@ -20,6 +20,7 @@ export class CustomerRepository implements ICustomerRepository {
     status,
     restriction,
     credit,
+    address,
   }: ICreateCustomerDTO): Promise<Customer> {
     const customer = this.repository.create({
       name,
@@ -30,6 +31,7 @@ export class CustomerRepository implements ICustomerRepository {
       status,
       restriction,
       credit: credit ?? undefined,
+      address,
     });
 
     await this.repository.save(customer);
@@ -40,8 +42,18 @@ export class CustomerRepository implements ICustomerRepository {
     return this.repository.find();
   }
 
+  async findById(id: number): Promise<Customer | null> {
+    const customer = await this.repository.findOneBy({ id });
+    return customer || null;
+  }
+
   async findByName(name: string): Promise<Customer | null> {
     const customer = await this.repository.findOneBy({ name });
     return customer || null;
+  }
+
+  async update(id: number, data: Partial<Customer>): Promise<Customer> {
+    await this.repository.update(id, data);
+    return (await this.repository.findOne({ where: { id } })) as Customer;
   }
 }

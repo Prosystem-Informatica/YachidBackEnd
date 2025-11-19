@@ -39,7 +39,16 @@ export class EnterpriseRepository implements IEnterpriseRepository {
     return this.repository.findOneBy({ email });
   }
 
+  async findById(id: number): Promise<Enterprise | null> {
+    return this.repository.findOneBy({ id });
+  }
+
   async list(): Promise<Enterprise[]> {
     return this.repository.find();
+  }
+
+  async update(id: number, data: Partial<Enterprise>): Promise<Enterprise> {
+    await this.repository.update(id, data);
+    return (await this.repository.findOne({ where: { id } })) as Enterprise;
   }
 }

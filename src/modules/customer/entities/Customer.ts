@@ -34,6 +34,9 @@ export class Customer {
   @Column({ type: "float", nullable: true })
   credit?: number;
 
+  @Column({ type: "json", nullable: true })
+  address?: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 }

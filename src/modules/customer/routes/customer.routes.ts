@@ -13,4 +13,8 @@ customerRoutes.post("/", (req, res) =>
 
 customerRoutes.get("/", (req, res) => listCustomersController.handle(req, res));
 
+customerRoutes.put("/:id", (req, res) =>
+  createCustomerController.update(req, res)
+);
+
 export { customerRoutes };

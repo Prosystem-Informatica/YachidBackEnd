@@ -38,3 +38,6 @@ container.registerSingleton<IInvoiceRepository>(
   "InvoiceRepository",
   InvoiceRepository
 );
+
+import { NFeService } from "../../modules/invoices/services/NFeService";
+container.registerSingleton<NFeService>("NFeService", NFeService);

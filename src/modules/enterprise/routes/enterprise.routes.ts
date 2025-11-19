@@ -15,4 +15,8 @@ enterpriseRoutes.get("/", (req, res) =>
   listEnterprisesController.handle(req, res)
 );
 
+enterpriseRoutes.put("/:id", (req, res) =>
+  createEnterpriseController.update(req, res)
+);
+
 export { enterpriseRoutes };

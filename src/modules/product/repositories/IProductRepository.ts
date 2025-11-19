@@ -7,6 +7,7 @@ export interface IProductRepository {
   findById(id: number): Promise<Product | null>;
   findAll(): Promise<Product[]>;
   findByCategory(category: string): Promise<Product[]>;
+  findByEnterpriseId(enterprise_id: number): Promise<Product[]>;
   update(id: number, data: Partial<ICreateProductDTO>): Promise<Product | null>;
   delete(id: number): Promise<boolean>;
 }

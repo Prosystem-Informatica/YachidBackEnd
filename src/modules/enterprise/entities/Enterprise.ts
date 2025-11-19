@@ -49,6 +49,9 @@ export class Enterprise {
   @Column({ type: "varchar", length: 1, default: "2" })
   environment!: "1" | "2";
 
+  @Column({ type: "varchar", length: 1000, nullable: true })
+  address!: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 }

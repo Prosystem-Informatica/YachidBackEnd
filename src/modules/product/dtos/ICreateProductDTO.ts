@@ -3,7 +3,8 @@ export interface ICreateProductDTO {
   description?: string | null;
   price: number;
   quantity: number;
-  cfop: number;
-  ncm: number;
+  cfop: string;
+  ncm: string;
   category?: string | null;
+  enterprise_id: number;
 }

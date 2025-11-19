@@ -7,10 +7,10 @@ export interface ICreateEnterpriseDTO {
   cnpj_cpf: string;
   branches?: string[] | null;
   phone?: string | null;
-  certificate?: string | null;
-  certificate_password?: string | null;
-  enterprise_id?: number | null;
+  cert_filename?: string | null;
+  cert_password?: string | null;
   csc_id?: string | null;
   csc_token?: string | null;
+  address?: string | null;
   environment?: "homologation" | "production";
 }

@@ -27,6 +27,7 @@ export class CreateProductUseCase {
     cfop,
     ncm,
     category,
+    enterprise_id,
   }: ICreateProductDTO): Promise<Product> {
     const productAlreadyExists = await this.productRepository.findByName(name);
 
@@ -42,6 +43,7 @@ export class CreateProductUseCase {
       category,
       cfop,
       ncm,
+      enterprise_id,
     });
 
     return product;

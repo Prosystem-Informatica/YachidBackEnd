@@ -10,6 +10,12 @@ export class InvoiceRepository implements IInvoiceRepository {
   constructor() {
     this.repository = AppDataSource.getRepository(Invoice);
   }
+  findEnterpriseById(enterprise_id: number): Promise<Invoice[]> {
+    throw new Error("Method not implemented.");
+  }
+  findCustomerById(customer_id: number): Promise<Invoice[]> {
+    throw new Error("Method not implemented.");
+  }
 
   async create(data: ICreateInvoiceDTO): Promise<Invoice> {
     const queryRunner = AppDataSource.createQueryRunner();

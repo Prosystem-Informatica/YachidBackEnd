@@ -7,6 +7,7 @@ import { Customer } from "../modules/customer/entities/Customer";
 import { Product } from "../modules/product/entities/Product";
 import { Invoice } from "../modules/invoices/entities/envoice";
 import { InvoiceItem } from "../modules/invoices/entities/envoiceItem";
+import { NFeXML } from "../modules/invoices/entities/NFeXML";
 
 export const AppDataSource = new DataSource({
   type: env.dbType,
@@ -17,7 +18,15 @@ export const AppDataSource = new DataSource({
   database: env.dbName,
   synchronize: env.dbSync,
   logging: env.dbLog,
-  entities: [Employee, Enterprise, Customer, Product, Invoice, InvoiceItem],
+  entities: [
+    Employee,
+    Enterprise,
+    Customer,
+    Product,
+    Invoice,
+    InvoiceItem,
+    NFeXML,
+  ],
   migrations: [],
   subscribers: [],
 });

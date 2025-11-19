@@ -1,24 +1,38 @@
 import { Request, Response } from "express";
-import { ProductRepository } from "../../repositories/ProductRepository";
 import { container } from "tsyringe";
+import { CreateProductUseCase } from "./createProductUseCase";
 
 export class CreateProductController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { name, description, price, quantity, category, cfop, ncm } =
-      req.body;
+    try {
+      const {
+        name,
+        description,
+        price,
+        quantity,
+        category,
+        cfop,
+        ncm,
+        enterprise_id,
+      } = req.body;
 
-    const createProductRepository = container.resolve(ProductRepository);
+      const createProductUseCase = container.resolve(CreateProductUseCase);
 
-    const product = await createProductRepository.create({
-      name,
-      description,
-      price,
-      quantity,
-      category,
-      cfop,
-      ncm,
-    });
+      const product = await createProductUseCase.execute({
+        name,
+        description,
+        price,
+        quantity,
+        category,
+        cfop,
+        ncm,
+        enterprise_id,
+      });
 
-    return res.status(201).json(product);
+      return res.status(201).json(product);
+    } catch (error: any) {
+      console.error("❌ Erro ao criar produto:", error.message);
+      return res.status(400).json({ error: error.message });
+    }
   }
 }
