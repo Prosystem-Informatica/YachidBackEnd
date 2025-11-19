@@ -1,3 +1,5 @@
+/*
+
 import { injectable } from "tsyringe";
 import {
   carregaCertificadoPath,
@@ -115,6 +117,7 @@ export class NFeService {
       CRT: "1",
     };
 
+    // Destinatário
     const isCNPJ = customer.cnpj_cpf?.length === 14;
     const dest: any = {
       xNome:
@@ -125,11 +128,11 @@ export class NFeService {
     };
     if (isCNPJ) {
       dest.CNPJ = customer.cnpj_cpf;
-      dest.indIEDest = "1";
+      dest.indIEDest = "1"; // Contribuinte ICMS
       dest.IE = "392288904117";
     } else {
       dest.CPF = customer.cnpj_cpf;
-      dest.indIEDest = "9";
+      dest.indIEDest = "9"; // Não contribuinte
     }
 
     const nfe = {
@@ -333,6 +336,7 @@ export class NFeService {
     if (!configuracoes)
       throw new AppError("Configurações da NF-e não fornecidas", 500);
 
+    // Em homologação, podemos colocar justificativa padrão curta
     if (!justification || justification.length < 15) {
       justification =
         "Cancelamento em ambiente de homologação - teste sem valor fiscal";
@@ -349,41 +353,10 @@ export class NFeService {
 
       console.log("✅ Cancelamento realizado com sucesso:", cancelResult);
 
-      const xmlCancel = cancelResult?.xml_completo || null;
-      if (xmlCancel) {
-        const xmlDir = "nfe_xmls";
-        if (!fs.existsSync(xmlDir)) fs.mkdirSync(xmlDir);
-        const xmlPath = `${xmlDir}/nfe-cancel-${invoiceId}.xml`;
-        fs.writeFileSync(xmlPath, xmlCancel);
-        console.log(`✅ XML de cancelamento salvo em: ${xmlPath}`);
-
-        try {
-          console.log("🖨️ Gerando DANFE de cancelamento...");
-          const pdfDoc = await gerarPDF(xmlCancel);
-          const pdfPath = `${xmlDir}/danfe-cancel-${invoiceId}.pdf`;
-          const writeStream = fs.createWriteStream(pdfPath);
-          pdfDoc.pipe(writeStream);
-          pdfDoc.end();
-          await new Promise<void>((resolve, reject) => {
-            writeStream.on("finish", () => {
-              console.log(`🧾 DANFE de cancelamento gerado em: ${pdfPath}`);
-              resolve();
-            });
-            writeStream.on("error", (err) => {
-              console.error("❌ Erro ao gravar DANFE de cancelamento:", err);
-              reject(err);
-            });
-          });
-        } catch (pdfErr) {
-          console.warn("⚠️ Falha ao gerar DANFE de cancelamento:", pdfErr);
-        }
-      }
-
       return {
         success: true,
         message: `NF ${invoiceId} cancelada com sucesso`,
         details: cancelResult,
-        xml: xmlCancel,
       };
     } catch (err: any) {
       console.error("❌ Erro ao cancelar NF-e:", err);
@@ -394,3 +367,4 @@ export class NFeService {
     }
   }
 }
+*/

@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { Invoice } from "./envoice";
 
 @Entity("invoice_items")
 export class InvoiceItem {
@@ -6,7 +13,11 @@ export class InvoiceItem {
   id!: number;
 
   @Column()
-  invoice_id!: string;
+  invoice_id!: number;
+
+  @ManyToOne(() => Invoice)
+  @JoinColumn({ name: "invoice_id" })
+  invoice!: Invoice;
 
   @Column()
   product_id!: number;

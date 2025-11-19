@@ -13,7 +13,7 @@ export class CancelInvoiceUseCase {
     private nfeService: NFeService
   ) {}
 
-  async execute(invoiceId: string, justification: string) {
+  async execute(invoiceId: string, justification?: string) {
     const invoice = await this.invoiceRepository.findById(Number(invoiceId));
     if (!invoice) throw new AppError("Nota fiscal não encontrada", 404);
 
@@ -43,6 +43,19 @@ export class CancelInvoiceUseCase {
       configuracoes = JSON.parse(nfeXml.configuracoes);
     } catch (err) {
       throw new AppError("Falha ao interpretar configurações da NF-e", 500);
+    }
+
+    const ambiente = configuracoes?.geral?.ambiente;
+    if (!justification || justification.trim().length < 15) {
+      if (ambiente === 2) {
+        justification =
+          "Cancelamento de teste - NF-e emitida em ambiente de homologação";
+      } else {
+        throw new AppError(
+          "A justificativa deve conter pelo menos 15 caracteres.",
+          400
+        );
+      }
     }
 
     const result = await this.nfeService.cancel(

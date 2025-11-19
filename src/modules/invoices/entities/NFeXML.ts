@@ -17,18 +17,18 @@ export class NFeXML {
   @Column()
   enterprise_id!: number;
 
-  @Column({ nullable: true })
-  invoice_id?: number | null;
+  @Column()
+  invoice_id!: number;
 
   @ManyToOne(() => Enterprise)
   @JoinColumn({ name: "enterprise_id" })
   enterprise!: Enterprise;
 
-  @ManyToOne(() => Invoice, { nullable: true })
+  @ManyToOne(() => Invoice)
   @JoinColumn({ name: "invoice_id" })
-  invoice?: Invoice | null;
+  invoice!: Invoice;
 
-  @Column({ type: "longtext" })
+  @Column("longtext")
   xml!: string;
 
   @Column({ type: "varchar", length: 50, nullable: true })
