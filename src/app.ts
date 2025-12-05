@@ -1,5 +1,7 @@
+// src/app.ts
 import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { router } from "./routes";
 import { AppError } from "./shared/errors/AppError";
 import "./shared/container";
@@ -7,8 +9,15 @@ import env from "./config/env";
 
 export const app = express();
 
-app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
+app.use(express.json());
 app.use(router);
 
 app.get("/health", (req: Request, res: Response) => {

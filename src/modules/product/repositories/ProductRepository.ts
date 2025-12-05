@@ -12,29 +12,40 @@ export class ProductRepository implements IProductRepository {
     this.repository = AppDataSource.getRepository(Product);
   }
 
-  async create({
-    name,
-    description,
-    price,
-    quantity,
-    cfop,
-    ncm,
-    category,
-    enterprise_id,
-  }: ICreateProductDTO): Promise<Product> {
+  async create(data: ICreateProductDTO): Promise<Product> {
     const product = this.repository.create({
-      name,
-      description,
-      price,
-      quantity,
-      cfop,
-      ncm,
-      category,
-      enterprise_id,
-    } as unknown as Partial<Product>);
+      cProd: data.cProd,
+      name: data.name,
+      description: data.description ?? null,
+      category: data.category ?? null,
+      ncm: data.ncm,
+      cest: data.cest ?? null,
+      cfop: data.cfop,
+      uCom: data.uCom ?? "UN",
+      uTrib: data.uTrib ?? "UN",
+      cEAN: data.cEAN ?? "SEM GTIN",
+      cEANTrib: data.cEANTrib ?? "SEM GTIN",
+      cst: data.cst ?? "102",
+      orig: data.orig ?? "0",
+      icms_rate: data.icms_rate ?? 0,
+      ipi_rate: data.ipi_rate ?? 0,
+      pis_rate: data.pis_rate ?? 0,
+      cofins_rate: data.cofins_rate ?? 0,
+      pCredSN: data.pCredSN ?? 0,
+      vCredICMSSN: data.vCredICMSSN ?? 0,
+      cost_price: data.cost_price,
+      profit_margin: data.profit_margin,
+      profit_value: data.profit_value,
+      price: data.price,
+      quantity: data.quantity,
+      status: data.status ?? true,
+      enterprise_id: data.enterprise_id,
+    });
 
-    await this.repository.save(product);
-    return product;
+    const saved = await this.repository.save(product);
+    console.log("✅ Produto salvo no banco:", saved);
+
+    return saved;
   }
 
   async findById(id: number): Promise<Product | null> {
