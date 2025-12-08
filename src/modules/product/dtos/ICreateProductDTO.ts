@@ -2,7 +2,7 @@ export interface ICreateProductDTO {
   cProd: string;
   name: string;
   description?: string | null;
-  category?: string | null;
+  category_id?: number;
   ncm: string;
   cest?: string | null;
   cfop: string;

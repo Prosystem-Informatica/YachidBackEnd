@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { Enterprise } from "../../enterprise/entities/Enterprise";
+import { Category } from "../../category/entities/Category";
 
 @Entity("products")
 export class Product {
@@ -23,8 +24,12 @@ export class Product {
   @Column({ type: "text", nullable: true })
   description?: string | null;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  category?: string | null;
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: "category_id" })
+  category?: Category;
+
+  @Column({ nullable: true })
+  category_id?: number;
 
   @Column({ type: "varchar", length: 8 })
   ncm!: string;
@@ -36,13 +41,13 @@ export class Product {
   cfop!: string;
 
   @Column({ type: "varchar", length: 10, default: "UN" })
-  uCom!: string; // unidade comercial
+  uCom!: string;
 
   @Column({ type: "varchar", length: 10, default: "UN" })
-  uTrib!: string; // unidade tributável
+  uTrib!: string;
 
   @Column({ type: "varchar", length: 14, default: "SEM GTIN" })
-  cEAN!: string; // código de barras
+  cEAN!: string;
 
   @Column({ type: "varchar", length: 14, default: "SEM GTIN" })
   cEANTrib!: string;

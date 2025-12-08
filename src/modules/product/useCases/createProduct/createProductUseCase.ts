@@ -1,19 +1,12 @@
 import { inject, injectable } from "tsyringe";
 import { AppError } from "../../../../shared/errors/AppError";
-import { Request, Response } from "express-serve-static-core";
-import { ParsedQs } from "qs";
 import { IProductRepository } from "../../repositories/IProductRepository";
 import { Product } from "../../entities/Product";
 import { ICreateProductDTO } from "../../dtos/ICreateProductDTO";
+import { Category } from "../../../category/entities/Category";
 
 @injectable()
 export class CreateProductUseCase {
-  static handle(
-    req: Request<{}, any, any, ParsedQs, Record<string, any>>,
-    res: Response<any, Record<string, any>, number>
-  ): unknown {
-    throw new Error(" Metodo não implementado.");
-  }
   constructor(
     @inject("ProductRepository")
     private productRepository: IProductRepository
@@ -26,7 +19,6 @@ export class CreateProductUseCase {
     quantity,
     cfop,
     ncm,
-    category,
     enterprise_id,
     cProd,
     uCom,
@@ -44,7 +36,8 @@ export class CreateProductUseCase {
     cost_price,
     profit_margin,
     profit_value,
-  }: ICreateProductDTO): Promise<Product> {
+    category_id,
+  }: ICreateProductDTO & { category?: Category }): Promise<Product> {
     const productAlreadyExists = await this.productRepository.findByName(name);
 
     if (productAlreadyExists) {
@@ -56,7 +49,6 @@ export class CreateProductUseCase {
       description,
       price,
       quantity,
-      category,
       cfop,
       ncm,
       enterprise_id,
@@ -76,6 +68,7 @@ export class CreateProductUseCase {
       cost_price,
       profit_margin,
       profit_value,
+      category_id,
     });
 
     return product;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateProductUseCase } from "./createProductUseCase";
+import { Category } from "../../../category/entities/Category";
 
 export class CreateProductController {
   async handle(req: Request, res: Response): Promise<Response> {
@@ -12,11 +13,11 @@ export class CreateProductController {
         return isNaN(n) ? defaultValue : n;
       };
 
-      const productData = {
+      const productData: any = {
         cProd: body.cProd,
         name: body.name,
         description: body.description ?? null,
-        category: body.category ?? null,
+        category_id: body.category_id ?? null,
         ncm: body.ncm,
         cfop: body.cfop,
         cest: body.cest ?? null,
@@ -40,6 +41,10 @@ export class CreateProductController {
         status: body.status ?? true,
         enterprise_id: toNumber(body.enterprise_id, 1),
       };
+
+      if (body.category) {
+        productData.category = { id: toNumber(body.category) } as Category;
+      }
 
       console.log("📦 Payload final enviado ao UseCase:", productData);
       console.log("📦 Body recebido:", req.body);

@@ -1,7 +1,7 @@
 import { container } from "tsyringe";
+
 import { IEmployeeRepository } from "../../modules/employee/repositories/IEmployeeRepository";
 import { EmployeeRepository } from "../../modules/employee/repositories/EmployeeRepository";
-
 container.registerSingleton<IEmployeeRepository>(
   "EmployeeRepository",
   EmployeeRepository
@@ -9,7 +9,6 @@ container.registerSingleton<IEmployeeRepository>(
 
 import { IEnterpriseRepository } from "../../modules/enterprise/repositories/IEnterpriseRepository";
 import { EnterpriseRepository } from "../../modules/enterprise/repositories/EnterpriseRepository";
-
 container.registerSingleton<IEnterpriseRepository>(
   "EnterpriseRepository",
   EnterpriseRepository
@@ -17,7 +16,6 @@ container.registerSingleton<IEnterpriseRepository>(
 
 import { ICustomerRepository } from "../../modules/customer/repositories/ICustomerRepository";
 import { CustomerRepository } from "../../modules/customer/repositories/CustomerRepository";
-
 container.registerSingleton<ICustomerRepository>(
   "CustomerRepository",
   CustomerRepository
@@ -25,7 +23,6 @@ container.registerSingleton<ICustomerRepository>(
 
 import { IProductRepository } from "../../modules/product/repositories/IProductRepository";
 import { ProductRepository } from "../../modules/product/repositories/ProductRepository";
-
 container.registerSingleton<IProductRepository>(
   "ProductRepository",
   ProductRepository
@@ -33,11 +30,17 @@ container.registerSingleton<IProductRepository>(
 
 import { IInvoiceRepository } from "../../modules/invoices/repositories/IInvoiceRepository";
 import { InvoiceRepository } from "../../modules/invoices/repositories/InvoiceRepository";
-
 container.registerSingleton<IInvoiceRepository>(
   "InvoiceRepository",
   InvoiceRepository
 );
 
+import { ICategoryRepository } from "../../modules/category/repositories/ICategoryRepository";
+import { CategoryRepository } from "../../modules/category/repositories/CategoryRepository";
+container.register<ICategoryRepository>("CategoryRepository", {
+  useFactory: () => new CategoryRepository(AppDataSource),
+});
+
 import { NFeService } from "../../modules/invoices/services/NFeService";
+import { AppDataSource } from "../../config/database";
 container.registerSingleton<NFeService>("NFeService", NFeService);

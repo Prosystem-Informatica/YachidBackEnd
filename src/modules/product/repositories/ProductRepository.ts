@@ -16,8 +16,8 @@ export class ProductRepository implements IProductRepository {
     const product = this.repository.create({
       cProd: data.cProd,
       name: data.name,
-      description: data.description ?? null,
-      category: data.category ?? null,
+      description: data.description ?? undefined,
+      category_id: data.category_id ?? undefined,
       ncm: data.ncm,
       cest: data.cest ?? null,
       cfop: data.cfop,
@@ -42,30 +42,39 @@ export class ProductRepository implements IProductRepository {
       enterprise_id: data.enterprise_id,
     });
 
-    const saved = await this.repository.save(product);
-    console.log("✅ Produto salvo no banco:", saved);
-
-    return saved;
+    return await this.repository.save(product);
   }
 
   async findById(id: number): Promise<Product | null> {
-    return await this.repository.findOneBy({ id });
+    return await this.repository.findOne({
+      where: { id },
+      relations: ["category"],
+    });
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.repository.find();
+    return await this.repository.find({ relations: ["category"] });
   }
 
   async findByEnterpriseId(enterprise_id: number): Promise<Product[]> {
-    return await this.repository.findBy({ enterprise_id });
+    return await this.repository.find({
+      where: { enterprise_id },
+      relations: ["category"],
+    });
   }
 
   async findByName(name: string): Promise<Product | null> {
-    return await this.repository.findOneBy({ name });
+    return await this.repository.findOne({
+      where: { name },
+      relations: ["category"],
+    });
   }
 
-  async findByCategory(category: string): Promise<Product[]> {
-    return await this.repository.findBy({ category });
+  async findByCategory(category_id: number): Promise<Product[]> {
+    return await this.repository.find({
+      where: { category_id },
+      relations: ["category"],
+    });
   }
 
   async update(
@@ -74,11 +83,16 @@ export class ProductRepository implements IProductRepository {
   ): Promise<Product | null> {
     const existing = await this.repository.findOneBy({ id });
     if (!existing) return null;
+
     await this.repository.update(
       id,
       data as unknown as QueryDeepPartialEntity<Product>
     );
-    return await this.repository.findOneBy({ id });
+
+    return await this.repository.findOne({
+      where: { id },
+      relations: ["category"],
+    });
   }
 
   async delete(id: number): Promise<boolean> {
