@@ -20,9 +20,8 @@ container.registerSingleton<ICustomerRepository>(
   "CustomerRepository",
   CustomerRepository
 );
-
-import { IProductRepository } from "../../modules/product/repositories/IProductRepository";
-import { ProductRepository } from "../../modules/product/repositories/ProductRepository";
+import { IProductRepository } from "../../modules/product/coreProduct/repositories/IProductRepository";
+import { ProductRepository } from "../../modules/product/coreProduct/repositories/ProductRepository";
 container.registerSingleton<IProductRepository>(
   "ProductRepository",
   ProductRepository
@@ -35,8 +34,8 @@ container.registerSingleton<IInvoiceRepository>(
   InvoiceRepository
 );
 
-import { ICategoryRepository } from "../../modules/category/repositories/ICategoryRepository";
-import { CategoryRepository } from "../../modules/category/repositories/CategoryRepository";
+import { ICategoryRepository } from "../../modules/product/category/repositories/ICategoryRepository";
+import { CategoryRepository } from "../../modules/product/category/repositories/CategoryRepository";
 container.register<ICategoryRepository>("CategoryRepository", {
   useFactory: () => new CategoryRepository(AppDataSource),
 });

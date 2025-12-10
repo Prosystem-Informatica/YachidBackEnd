@@ -2,9 +2,9 @@ import { Router } from "express";
 import { employeeRoutes } from "../modules/employee/routes/employee.routes";
 import { customerRoutes } from "../modules/customer/routes/customer.routes";
 import { enterpriseRoutes } from "../modules/enterprise/routes/enterprise.routes";
-import { productRoutes } from "../modules/product/routes/product.routes";
 import { invoiceRoutes } from "../modules/invoices/routes/invoice.routes";
-import { categoryRoutes } from "../modules/category/routes/category.routes";
+import { productRoutes } from "../modules/product/coreProduct/routes/product.routes";
+import { categoryRoutes } from "../modules/product/category/routes/category.routes";
 
 const router = Router();
 
