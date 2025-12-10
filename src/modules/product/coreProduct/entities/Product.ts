@@ -57,12 +57,6 @@ export class Product {
   @Column({ nullable: true })
   manufacturer_id?: number;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  line?: string;
-
-  @Column({ type: "varchar", length: 50, nullable: true })
-  family?: string;
-
   @Column({ type: "varchar", length: 100, nullable: true })
   classification?: string;
 
@@ -74,9 +68,6 @@ export class Product {
 
   @Column({ type: "varchar", length: 100, nullable: true })
   packaging?: string;
-
-  @Column({ type: "int", nullable: true })
-  validity_days?: number;
 
   @Column("decimal", { precision: 10, scale: 3, default: 0 })
   stock_quantity!: number;
