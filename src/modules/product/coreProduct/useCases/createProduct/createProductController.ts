@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateProductUseCase } from "./createProductUseCase";
-import { Category } from "../../../category/entities/Category";
 
 export class CreateProductController {
   async handle(req: Request, res: Response): Promise<Response> {
@@ -13,44 +12,35 @@ export class CreateProductController {
         return isNaN(n) ? defaultValue : n;
       };
 
-      const productData: any = {
-        cProd: body.cProd,
+      const productData = {
+        enterprise_id: toNumber(body.enterprise_id, 1),
+        category_id: body.category_id ? toNumber(body.category_id) : undefined,
+        code: body.code,
         name: body.name,
         description: body.description ?? null,
-        category_id: body.category_id ?? null,
-        ncm: body.ncm,
-        cfop: body.cfop,
-        cest: body.cest ?? null,
-        uCom: body.uCom ?? "UN",
-        uTrib: body.uTrib ?? "UN",
-        cEAN: body.cEAN ?? "SEM GTIN",
-        cEANTrib: body.cEANTrib ?? "SEM GTIN",
-        cst: body.cst ?? "102",
-        orig: body.orig ?? "0",
-        icms_rate: toNumber(body.icms_rate),
-        ipi_rate: toNumber(body.ipi_rate),
-        pis_rate: toNumber(body.pis_rate),
-        cofins_rate: toNumber(body.cofins_rate),
-        pCredSN: toNumber(body.pCredSN),
-        vCredICMSSN: toNumber(body.vCredICMSSN),
-        cost_price: toNumber(body.cost_price),
-        price: toNumber(body.price),
-        profit_margin: toNumber(body.profit_margin),
-        profit_value: toNumber(body.profit_value),
-        quantity: toNumber(body.quantity, 1),
-        status: body.status ?? true,
-        enterprise_id: toNumber(body.enterprise_id, 1),
+        barcode: body.barcode ?? "SEM GTIN",
+        unit: body.unit ?? "UN",
+        manufacturer_id: body.manufacturer_id
+          ? toNumber(body.manufacturer_id)
+          : undefined,
+        classification: body.classification ?? undefined,
+        weight_gross: toNumber(body.weight_gross),
+        weight_net: toNumber(body.weight_net),
+        packaging: body.packaging ?? undefined,
+        stock_quantity: toNumber(body.stock_quantity),
+        stock_minimum: toNumber(body.stock_minimum),
+        stock_maximum: toNumber(body.stock_maximum),
+        active:
+          typeof body.active === "boolean"
+            ? body.active
+            : body.active === "false"
+            ? false
+            : true,
       };
 
-      if (body.category) {
-        productData.category = { id: toNumber(body.category) } as Category;
-      }
-
       console.log("📦 Payload final enviado ao UseCase:", productData);
-      console.log("📦 Body recebido:", req.body);
 
       const createProductUseCase = container.resolve(CreateProductUseCase);
-
       const product = await createProductUseCase.execute(productData);
 
       return res.status(201).json(product);

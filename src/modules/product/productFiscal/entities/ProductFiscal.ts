@@ -4,9 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   OneToOne,
+  JoinColumn,
 } from "typeorm";
 import { Product } from "../../coreProduct/entities/Product";
 
@@ -18,7 +17,7 @@ export class ProductFiscal {
   @Column()
   product_id!: number;
 
-  @OneToOne(() => Product)
+  @OneToOne(() => Product, { onDelete: "CASCADE" })
   @JoinColumn({ name: "product_id" })
   product!: Product;
 

@@ -1,9 +1,9 @@
-import { ICreateProductDTO } from "../dtos/ICreateProductDTO";
+import { Repository } from "typeorm";
 import { Product } from "../entities/Product";
 import { IProductRepository } from "./IProductRepository";
-import { Repository } from "typeorm";
-import { AppDataSource } from "../../../config/database";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { AppDataSource } from "../../../../config/database";
+import { ICreateProductDTO } from "../dtos/ICreateProductDTO";
 
 export class ProductRepository implements IProductRepository {
   private readonly repository: Repository<Product>;
@@ -14,32 +14,22 @@ export class ProductRepository implements IProductRepository {
 
   async create(data: ICreateProductDTO): Promise<Product> {
     const product = this.repository.create({
-      cProd: data.cProd,
-      name: data.name,
-      description: data.description ?? undefined,
-      category_id: data.category_id ?? undefined,
-      ncm: data.ncm,
-      cest: data.cest ?? null,
-      cfop: data.cfop,
-      uCom: data.uCom ?? "UN",
-      uTrib: data.uTrib ?? "UN",
-      cEAN: data.cEAN ?? "SEM GTIN",
-      cEANTrib: data.cEANTrib ?? "SEM GTIN",
-      cst: data.cst ?? "102",
-      orig: data.orig ?? "0",
-      icms_rate: data.icms_rate ?? 0,
-      ipi_rate: data.ipi_rate ?? 0,
-      pis_rate: data.pis_rate ?? 0,
-      cofins_rate: data.cofins_rate ?? 0,
-      pCredSN: data.pCredSN ?? 0,
-      vCredICMSSN: data.vCredICMSSN ?? 0,
-      cost_price: data.cost_price,
-      profit_margin: data.profit_margin,
-      profit_value: data.profit_value,
-      price: data.price,
-      quantity: data.quantity,
-      status: data.status ?? true,
       enterprise_id: data.enterprise_id,
+      category_id: data.category_id ?? undefined,
+      code: data.code,
+      name: data.name,
+      description: data.description ?? null,
+      barcode: data.barcode ?? "SEM GTIN",
+      unit: data.unit ?? "UN",
+      manufacturer_id: data.manufacturer_id ?? undefined,
+      classification: data.classification ?? undefined,
+      weight_gross: data.weight_gross ?? 0,
+      weight_net: data.weight_net ?? 0,
+      packaging: data.packaging ?? undefined,
+      stock_quantity: data.stock_quantity ?? 0,
+      stock_minimum: data.stock_minimum ?? 0,
+      stock_maximum: data.stock_maximum ?? 0,
+      active: data.active ?? true,
     });
 
     return await this.repository.save(product);
@@ -48,32 +38,44 @@ export class ProductRepository implements IProductRepository {
   async findById(id: number): Promise<Product | null> {
     return await this.repository.findOne({
       where: { id },
-      relations: ["category"],
+      relations: [
+        "category",
+        "manufacturer",
+        "fiscalData",
+        "prices",
+        "images",
+        "composition",
+        "used_in_compositions",
+      ],
     });
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.repository.find({ relations: ["category"] });
+    return await this.repository.find({
+      relations: ["category", "manufacturer"],
+      order: { id: "DESC" },
+    });
   }
 
   async findByEnterpriseId(enterprise_id: number): Promise<Product[]> {
     return await this.repository.find({
       where: { enterprise_id },
-      relations: ["category"],
+      relations: ["category", "manufacturer"],
+      order: { id: "DESC" },
     });
   }
 
   async findByName(name: string): Promise<Product | null> {
     return await this.repository.findOne({
       where: { name },
-      relations: ["category"],
+      relations: ["category", "manufacturer"],
     });
   }
 
   async findByCategory(category_id: number): Promise<Product[]> {
     return await this.repository.find({
       where: { category_id },
-      relations: ["category"],
+      relations: ["category", "manufacturer"],
     });
   }
 
@@ -91,7 +93,15 @@ export class ProductRepository implements IProductRepository {
 
     return await this.repository.findOne({
       where: { id },
-      relations: ["category"],
+      relations: [
+        "category",
+        "manufacturer",
+        "fiscalData",
+        "prices",
+        "images",
+        "composition",
+        "used_in_compositions",
+      ],
     });
   }
 

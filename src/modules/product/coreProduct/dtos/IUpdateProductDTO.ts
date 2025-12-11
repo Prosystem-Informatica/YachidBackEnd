@@ -1,8 +1,9 @@
-export interface ICreateProductDTO {
-  enterprise_id: number;
+export interface IUpdateProductDTO {
+  id: number;
+  enterprise_id?: number;
   category_id?: number;
-  code: string;
-  name: string;
+  code?: string;
+  name?: string;
   description?: string | null;
   barcode?: string;
   unit?: string;

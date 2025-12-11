@@ -2,10 +2,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { Product } from "../../coreProduct/entities/Product";
 
@@ -17,14 +17,14 @@ export class ProductComposition {
   @Column()
   parent_product_id!: number;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { onDelete: "CASCADE" })
   @JoinColumn({ name: "parent_product_id" })
   parent_product!: Product;
 
   @Column()
   component_product_id!: number;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { onDelete: "CASCADE" })
   @JoinColumn({ name: "component_product_id" })
   component_product!: Product;
 

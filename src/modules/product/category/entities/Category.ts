@@ -8,7 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Enterprise } from "../../enterprise/entities/Enterprise";
+import { Enterprise } from "../../../enterprise/entities/Enterprise";
 
 @Entity("categories")
 export class Category {

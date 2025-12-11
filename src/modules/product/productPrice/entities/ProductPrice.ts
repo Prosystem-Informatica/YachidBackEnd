@@ -17,7 +17,7 @@ export class ProductPrice {
   @Column()
   product_id!: number;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { onDelete: "CASCADE" })
   @JoinColumn({ name: "product_id" })
   product!: Product;
 

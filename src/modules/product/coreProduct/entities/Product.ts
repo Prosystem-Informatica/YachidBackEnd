@@ -78,6 +78,15 @@ export class Product {
   @Column("decimal", { precision: 10, scale: 3, default: 0 })
   stock_maximum!: number;
 
+  @Column("decimal", { precision: 10, scale: 2, default: 0 })
+  cost_price!: number;
+
+  @Column("decimal", { precision: 10, scale: 2, default: 0 })
+  profit_margin!: number;
+
+  @Column("decimal", { precision: 10, scale: 2, default: 0 })
+  sale_price!: number;
+
   @Column({ type: "boolean", default: true })
   active!: boolean;
 
@@ -87,18 +96,33 @@ export class Product {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @OneToMany(() => ProductFiscal, (fiscal) => fiscal.product)
+  @OneToMany(() => ProductFiscal, (fiscal) => fiscal.product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   fiscalData?: ProductFiscal[];
 
-  @OneToMany(() => ProductPrice, (price) => price.product)
+  @OneToMany(() => ProductPrice, (price) => price.product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   prices?: ProductPrice[];
 
-  @OneToMany(() => ProductImage, (image) => image.product)
+  @OneToMany(() => ProductImage, (image) => image.product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   images?: ProductImage[];
 
-  @OneToMany(() => ProductComposition, (comp) => comp.parent_product)
+  @OneToMany(() => ProductComposition, (comp) => comp.parent_product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   composition?: ProductComposition[];
 
-  @OneToMany(() => ProductComposition, (comp) => comp.component_product)
+  @OneToMany(() => ProductComposition, (comp) => comp.component_product, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   used_in_compositions?: ProductComposition[];
 }

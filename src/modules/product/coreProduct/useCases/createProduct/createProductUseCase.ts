@@ -1,9 +1,8 @@
 import { inject, injectable } from "tsyringe";
-import { AppError } from "../../../../shared/errors/AppError";
+import { AppError } from "../../../../../shared/errors/AppError";
 import { IProductRepository } from "../../repositories/IProductRepository";
 import { Product } from "../../entities/Product";
 import { ICreateProductDTO } from "../../dtos/ICreateProductDTO";
-import { Category } from "../../../category/entities/Category";
 
 @injectable()
 export class CreateProductUseCase {
@@ -12,63 +11,37 @@ export class CreateProductUseCase {
     private productRepository: IProductRepository
   ) {}
 
-  async execute({
-    name,
-    description,
-    price,
-    quantity,
-    cfop,
-    ncm,
-    enterprise_id,
-    cProd,
-    uCom,
-    uTrib,
-    cEAN,
-    cEANTrib,
-    cst,
-    orig,
-    icms_rate,
-    ipi_rate,
-    pis_rate,
-    cofins_rate,
-    pCredSN,
-    vCredICMSSN,
-    cost_price,
-    profit_margin,
-    profit_value,
-    category_id,
-  }: ICreateProductDTO & { category?: Category }): Promise<Product> {
-    const productAlreadyExists = await this.productRepository.findByName(name);
+  async execute(data: ICreateProductDTO): Promise<Product> {
+    const { name, enterprise_id } = data;
+
+    const existing = await this.productRepository.findByEnterpriseId(
+      enterprise_id
+    );
+    const productAlreadyExists = existing.find(
+      (p) => p.name.toLowerCase() === name.toLowerCase()
+    );
 
     if (productAlreadyExists) {
-      throw new AppError("Produto já existe", 400);
+      throw new AppError("Produto já existe para esta empresa", 400);
     }
 
     const product = await this.productRepository.create({
-      name,
-      description,
-      price,
-      quantity,
-      cfop,
-      ncm,
-      enterprise_id,
-      cProd,
-      uCom,
-      uTrib,
-      cEAN,
-      cEANTrib,
-      cst,
-      orig,
-      icms_rate,
-      ipi_rate,
-      pis_rate,
-      cofins_rate,
-      pCredSN,
-      vCredICMSSN,
-      cost_price,
-      profit_margin,
-      profit_value,
-      category_id,
+      enterprise_id: data.enterprise_id,
+      category_id: data.category_id ?? undefined,
+      code: data.code,
+      name: data.name,
+      description: data.description ?? null,
+      barcode: data.barcode ?? "SEM GTIN",
+      unit: data.unit ?? "UN",
+      manufacturer_id: data.manufacturer_id ?? undefined,
+      classification: data.classification ?? undefined,
+      weight_gross: data.weight_gross ?? 0,
+      weight_net: data.weight_net ?? 0,
+      packaging: data.packaging ?? undefined,
+      stock_quantity: data.stock_quantity ?? 0,
+      stock_minimum: data.stock_minimum ?? 0,
+      stock_maximum: data.stock_maximum ?? 0,
+      active: data.active ?? true,
     });
 
     return product;
