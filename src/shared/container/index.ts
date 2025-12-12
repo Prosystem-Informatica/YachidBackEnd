@@ -43,3 +43,11 @@ container.register<ICategoryRepository>("CategoryRepository", {
 import { NFeService } from "../../modules/invoices/services/NFeService";
 import { AppDataSource } from "../../config/database";
 container.registerSingleton<NFeService>("NFeService", NFeService);
+
+import { IProductCompositionRepository } from "../../modules/product/productComposition/repositories/IProductCompositionRepository";
+import { ProductCompositionRepository } from "../../modules/product/productComposition/repositories/ProductCompositionRepository";
+
+container.registerSingleton<IProductCompositionRepository>(
+  "ProductCompositionRepository",
+  ProductCompositionRepository
+);

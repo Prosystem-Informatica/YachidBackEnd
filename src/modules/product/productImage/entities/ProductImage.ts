@@ -15,26 +15,26 @@ export class ProductImage {
   id!: number;
 
   @Column()
-  product_id!: number;
+  product_id?: number;
 
   @ManyToOne(() => Product, { onDelete: "CASCADE" })
   @JoinColumn({ name: "product_id" })
-  product!: Product;
+  product?: Product;
 
   @Column({ type: "varchar", length: 255 })
-  image_url!: string;
+  image_url?: string;
 
   @Column({ type: "varchar", length: 150, nullable: true })
   caption?: string;
 
   @Column({ type: "boolean", default: false })
-  is_main!: boolean;
+  is_main?: boolean;
 
   @Column({ type: "int", default: 0 })
-  order!: number;
+  order?: number;
 
   @Column({ type: "boolean", default: true })
-  active!: boolean;
+  active?: boolean;
 
   @CreateDateColumn()
   created_at!: Date;

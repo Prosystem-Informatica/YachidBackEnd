@@ -11,13 +11,16 @@ const listProductsController = new ListProductsController();
 const deleteProductController = new DeleteProductController();
 const updateProductController = new UpdateProductController();
 
-
 productRoutes.post("/", (req, res) => createProductController.handle(req, res));
 
 productRoutes.get("/", (req, res) => listProductsController.handle(req, res));
 
-productRoutes.delete("/:id", (req, res) => deleteProductController.handle(req, res));
+productRoutes.delete("/:id", (req, res) =>
+  deleteProductController.handle(req, res)
+);
 
-productRoutes.put("/:id", (req, res) => updateProductController.handle(req, res));
+productRoutes.put("/:id", (req, res) =>
+  updateProductController.handle(req, res)
+);
 
 export { productRoutes };

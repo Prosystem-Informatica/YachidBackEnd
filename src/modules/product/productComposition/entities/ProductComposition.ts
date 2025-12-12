@@ -4,8 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
+  ManyToMany,
 } from "typeorm";
 import { Product } from "../../coreProduct/entities/Product";
 
@@ -14,19 +13,11 @@ export class ProductComposition {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  parent_product_id!: number;
+  @Column("varchar", { length: 150, nullable: true })
+  name?: string;
 
-  @ManyToOne(() => Product, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "parent_product_id" })
-  parent_product!: Product;
-
-  @Column()
-  component_product_id!: number;
-
-  @ManyToOne(() => Product, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "component_product_id" })
-  component_product!: Product;
+  @Column("text", { nullable: true })
+  description?: string;
 
   @Column("decimal", { precision: 10, scale: 3, default: 1 })
   quantity!: number;
@@ -36,6 +27,9 @@ export class ProductComposition {
 
   @Column({ type: "boolean", default: true })
   active!: boolean;
+
+  @ManyToMany(() => Product, (product) => product.compositions)
+  used_in_products?: Product[];
 
   @CreateDateColumn()
   created_at!: Date;

@@ -5,6 +5,7 @@ import { enterpriseRoutes } from "../modules/enterprise/routes/enterprise.routes
 import { invoiceRoutes } from "../modules/invoices/routes/invoice.routes";
 import { productRoutes } from "../modules/product/coreProduct/routes/product.routes";
 import { categoryRoutes } from "../modules/product/category/routes/category.routes";
+import { compositionRoutes } from "../modules/product/productComposition/routes/productComposition.routes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/enterprise", enterpriseRoutes);
 router.use("/product", productRoutes);
 router.use("/invoice", invoiceRoutes);
 router.use("/category", categoryRoutes);
+router.use("/composition", compositionRoutes);
 
 export { router };

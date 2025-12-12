@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Category } from "../../category/entities/Category";
 import { Enterprise } from "../../../enterprise/entities/Enterprise";
@@ -114,15 +116,11 @@ export class Product {
   })
   images?: ProductImage[];
 
-  @OneToMany(() => ProductComposition, (comp) => comp.parent_product, {
-    cascade: true,
-    onDelete: "CASCADE",
+  @ManyToMany(() => ProductComposition, { eager: true })
+  @JoinTable({
+    name: "product_composition_links",
+    joinColumn: { name: "product_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "composition_id", referencedColumnName: "id" },
   })
-  composition?: ProductComposition[];
-
-  @OneToMany(() => ProductComposition, (comp) => comp.component_product, {
-    cascade: true,
-    onDelete: "CASCADE",
-  })
-  used_in_compositions?: ProductComposition[];
+  compositions?: ProductComposition[];
 }

@@ -9,6 +9,11 @@ import { InvoiceItem } from "../modules/invoices/entities/envoiceItem";
 import { NFeXML } from "../modules/invoices/entities/NFeXML";
 import { Product } from "../modules/product/coreProduct/entities/Product";
 import { Category } from "../modules/product/category/entities/Category";
+import { ProductComposition } from "../modules/product/productComposition/entities/ProductComposition";
+import { ProductImage } from "../modules/product/productImage/entities/ProductImage";
+import { ProductPrice } from "../modules/product/productPrice/entities/ProductPrice";
+import { ProductFiscal } from "../modules/product/productFiscal/entities/ProductFiscal";
+import { Manufacturer } from "../modules/product/manufacturer/entities/Manufacturer.entity";
 
 export const AppDataSource = new DataSource({
   type: env.dbType,
@@ -23,11 +28,18 @@ export const AppDataSource = new DataSource({
     Employee,
     Enterprise,
     Customer,
-    Product,
     Invoice,
     InvoiceItem,
     NFeXML,
     Category,
+    Manufacturer,
+
+    //Product Entities :P
+    Product,
+    ProductFiscal,
+    ProductPrice,
+    ProductImage,
+    ProductComposition,
   ],
   migrations: [],
   subscribers: [],
