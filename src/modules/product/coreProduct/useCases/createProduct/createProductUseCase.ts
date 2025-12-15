@@ -31,7 +31,7 @@ interface IRequest {
   fiscal?: Partial<ProductFiscal>;
   prices?: Partial<ProductPrice>[];
   images?: Partial<ProductImage>[];
-  compositions?: Partial<ProductComposition>[]; // ✅ renomeado pra plural (mais coerente)
+  compositions?: Partial<ProductComposition>[];
 }
 
 @injectable()
@@ -60,7 +60,6 @@ export class CreateProductUseCase {
     await queryRunner.startTransaction();
 
     try {
-      // ✅ 1. Cria o produto base
       const product = queryRunner.manager.create(Product, {
         enterprise_id: data.enterprise_id,
         category_id: data.category_id ?? undefined,
@@ -85,7 +84,6 @@ export class CreateProductUseCase {
 
       const savedProduct = await queryRunner.manager.save(Product, product);
 
-      // ✅ 2. Cria dados fiscais
       if (data.fiscal) {
         const fiscal = queryRunner.manager.create(ProductFiscal, {
           ...data.fiscal,
@@ -94,7 +92,6 @@ export class CreateProductUseCase {
         await queryRunner.manager.save(ProductFiscal, fiscal);
       }
 
-      // ✅ 3. Cria preços
       if (data.prices && data.prices.length > 0) {
         const prices = data.prices.map((price) =>
           queryRunner.manager.create(ProductPrice, {
@@ -105,18 +102,17 @@ export class CreateProductUseCase {
         await queryRunner.manager.save(ProductPrice, prices);
       }
 
-      // ✅ 4. Cria imagens
       if (data.images && data.images.length > 0) {
         const images = data.images.map((image) =>
           queryRunner.manager.create(ProductImage, {
             ...image,
             product_id: savedProduct.id,
+            image_url: image.image_url, // Aqui é onde vamos salvar o caminho da imagem
           })
         );
         await queryRunner.manager.save(ProductImage, images);
       }
 
-      // ✅ 5. Associa composições (ManyToMany)
       if (data.compositions && data.compositions.length > 0) {
         const compositionRepo = AppDataSource.getRepository(ProductComposition);
 
@@ -125,12 +121,10 @@ export class CreateProductUseCase {
         for (const compData of data.compositions) {
           let composition: ProductComposition | null = null;
 
-          // Se veio com ID, tenta buscar existente
           if (compData.id) {
             composition = await compositionRepo.findOneBy({ id: compData.id });
           }
 
-          // Se não existir, cria uma nova
           if (!composition) {
             composition = compositionRepo.create({
               name: compData.name,
@@ -145,14 +139,12 @@ export class CreateProductUseCase {
           compositionsToLink.push(composition);
         }
 
-        // Associa via ManyToMany
         savedProduct.compositions = compositionsToLink;
         await queryRunner.manager.save(Product, savedProduct);
       }
 
       await queryRunner.commitTransaction();
 
-      // ✅ 6. Retorna produto completo com relações
       const fullProduct = await AppDataSource.getRepository(Product).findOne({
         where: { id: savedProduct.id },
         relations: [

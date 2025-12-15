@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { IProductRepository } from "../repositories/IProductRepository";
+import { IProductRepository } from "../../repositories/IProductRepository";
 
 @injectable()
 export class DeleteProductUseCase {
