@@ -13,11 +13,11 @@ interface IRequest {
   category_id?: number;
   code: string;
   name: string;
-  description?: string | null;
   barcode?: string;
   unit?: string;
   manufacturer_id?: number;
-  classification?: string;
+  type?: string;
+  stock_location?: string;
   weight_gross?: number;
   weight_net?: number;
   packaging?: string;
@@ -65,11 +65,11 @@ export class CreateProductUseCase {
         category_id: data.category_id ?? undefined,
         code: data.code,
         name: data.name,
-        description: data.description ?? null,
         barcode: data.barcode ?? "SEM GTIN",
         unit: data.unit ?? "UN",
         manufacturer_id: data.manufacturer_id ?? undefined,
-        classification: data.classification ?? undefined,
+        type: data.type ?? undefined,
+        stock_location: data.stock_location ?? undefined,
         weight_gross: data.weight_gross ?? 0,
         weight_net: data.weight_net ?? 0,
         packaging: data.packaging ?? undefined,

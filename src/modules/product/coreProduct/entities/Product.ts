@@ -52,15 +52,18 @@ export class Product {
   @Column({ type: "varchar", length: 10, default: "UN" })
   unit!: string;
 
+  @Column({ type: "varchar", length: 50, nullable: true })
+  type?: string | null;
+
+  @Column({ type: "varchar", length: 100, nullable: true })
+  stock_location?: string | null;
+
   @ManyToOne(() => Manufacturer, { nullable: true })
   @JoinColumn({ name: "manufacturer_id" })
   manufacturer?: Manufacturer;
 
   @Column({ nullable: true })
   manufacturer_id?: number;
-
-  @Column({ type: "varchar", length: 100, nullable: true })
-  classification?: string;
 
   @Column("decimal", { precision: 10, scale: 3, default: 0 })
   weight_gross!: number;

@@ -4,11 +4,11 @@ export interface IUpdateProductDTO {
   category_id?: number;
   code?: string;
   name?: string;
-  description?: string | null;
   barcode?: string;
+  stock_location?: string;
+  type?: string;
   unit?: string;
   manufacturer_id?: number;
-  classification?: string;
   weight_gross?: number;
   weight_net?: number;
   packaging?: string;
