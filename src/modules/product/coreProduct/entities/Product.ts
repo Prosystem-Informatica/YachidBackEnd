@@ -9,6 +9,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from "typeorm";
 import { Category } from "../../category/entities/Category";
 import { Enterprise } from "../../../enterprise/entities/Enterprise";
@@ -101,11 +102,11 @@ export class Product {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @OneToMany(() => ProductFiscal, (fiscal) => fiscal.product, {
+  @OneToOne(() => ProductFiscal, (fiscal) => fiscal.product, {
     cascade: true,
     onDelete: "CASCADE",
   })
-  fiscalData?: ProductFiscal[];
+  fiscalData?: ProductFiscal;
 
   @OneToMany(() => ProductPrice, (price) => price.product, {
     cascade: true,
