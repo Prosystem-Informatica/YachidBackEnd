@@ -42,4 +42,13 @@ export class EmployeeRepository implements IEmployeeRepository {
   async list(): Promise<Employee[]> {
     return this.repository.find();
   }
+
+  async findByCnpjCpf(cnpj_cpf: string): Promise<Employee | null> {
+    return this.repository.findOne({ where: { cnpj_cpf } });
+  }
+  async update(id: string, data: Partial<Employee>): Promise<Employee> {
+    await this.repository.update(id, data);
+    const updated = await this.repository.findOne({ where: { id } });
+    return updated as Employee;
+  }
 }

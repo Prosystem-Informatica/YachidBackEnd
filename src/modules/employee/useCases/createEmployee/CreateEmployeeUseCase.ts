@@ -3,21 +3,17 @@ import { hash } from "bcryptjs";
 import { IEmployeeRepository } from "../../repositories/IEmployeeRepository";
 import { AppError } from "../../../../shared/errors/AppError";
 import { Employee } from "../../entities/Employee";
-import { Request, Response } from "express-serve-static-core";
-import { ParsedQs } from "qs";
 import { ICreateEmployeeDTO } from "../../dtos/ICreateEmployeeDTO";
+import { IEnterpriseRepository } from "../../../enterprise/repositories/IEnterpriseRepository";
 
 @injectable()
 export class CreateEmployeeUseCase {
-  static handle(
-    req: Request<{}, any, any, ParsedQs, Record<string, any>>,
-    res: Response<any, Record<string, any>, number>
-  ): unknown {
-    throw new Error("Method not implemented.");
-  }
   constructor(
     @inject("EmployeeRepository")
-    private employeeRepository: IEmployeeRepository
+    private employeeRepository: IEmployeeRepository,
+
+    @inject("EnterpriseRepository")
+    private enterpriseRepository: IEnterpriseRepository
   ) {}
 
   async execute({
@@ -30,12 +26,27 @@ export class CreateEmployeeUseCase {
     status,
     role,
   }: ICreateEmployeeDTO): Promise<Employee> {
-    const employeeAlreadyExists = await this.employeeRepository.findByEmail(
+    const emailExistsInEmployee = await this.employeeRepository.findByEmail(
+      email
+    );
+    const emailExistsInEnterprise = await this.enterpriseRepository.findByEmail(
       email
     );
 
-    if (employeeAlreadyExists) {
-      throw new AppError("Employee already exists", 400);
+    if (emailExistsInEmployee || emailExistsInEnterprise) {
+      throw new AppError("E-mail já está em uso por outro usuário", 400);
+    }
+
+    if (cnpj_cpf) {
+      const cpfExistsInEmployee = await this.employeeRepository.findByCnpjCpf(
+        cnpj_cpf
+      );
+      const cpfExistsInEnterprise =
+        await this.enterpriseRepository.findByCnpjCpf(cnpj_cpf);
+
+      if (cpfExistsInEmployee || cpfExistsInEnterprise) {
+        throw new AppError("CPF/CNPJ já cadastrado em outro usuário", 400);
+      }
     }
 
     const passwordHash = await hash(password, 8);

@@ -51,4 +51,8 @@ export class EnterpriseRepository implements IEnterpriseRepository {
     await this.repository.update(id, data);
     return (await this.repository.findOne({ where: { id } })) as Enterprise;
   }
+
+  async findByCnpjCpf(cnpj_cpf: string): Promise<Enterprise | null> {
+    return this.repository.findOne({ where: { cnpj_cpf } });
+  }
 }

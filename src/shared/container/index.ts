@@ -20,6 +20,7 @@ container.registerSingleton<ICustomerRepository>(
   "CustomerRepository",
   CustomerRepository
 );
+
 import { IProductRepository } from "../../modules/product/coreProduct/repositories/IProductRepository";
 import { ProductRepository } from "../../modules/product/coreProduct/repositories/ProductRepository";
 container.registerSingleton<IProductRepository>(

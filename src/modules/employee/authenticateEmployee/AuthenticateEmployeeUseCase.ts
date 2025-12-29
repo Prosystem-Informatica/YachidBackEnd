@@ -1,56 +1,88 @@
 import { inject, injectable } from "tsyringe";
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import { IEmployeeRepository } from "../repositories/IEmployeeRepository";
 import { AppError } from "../../../shared/errors/AppError";
+import { IEnterpriseRepository } from "../../enterprise/repositories/IEnterpriseRepository";
+import { IEmployeeRepository } from "../../employee/repositories/IEmployeeRepository";
 
 interface IRequest {
-  email: string;
+  identifier: string;
   password: string;
 }
 
 interface IResponse {
-  Employee: {
+  user: {
+    id: string | number;
     name: string;
-    email: string;
+    email?: string | null;
+    type: "enterprise" | "employee";
   };
   token: string;
 }
 
 @injectable()
-export class AuthenticateEmployeeUseCase {
+export class AuthenticateUserUseCase {
   constructor(
+    @inject("EnterpriseRepository")
+    private enterpriseRepository: IEnterpriseRepository,
+
     @inject("EmployeeRepository")
     private employeeRepository: IEmployeeRepository
   ) {}
 
-  async execute({ email, password }: IRequest): Promise<IResponse> {
-    const employee = await this.employeeRepository.findByEmail(email);
+  private onlyDigits(value: string) {
+    return value.replace(/\D/g, "");
+  }
 
-    if (!employee) {
-      throw new AppError("E-mail ou senha incorretos", 401);
+  async execute({ identifier, password }: IRequest): Promise<IResponse> {
+    let user: any = null;
+    let userType: "enterprise" | "employee" | null = null;
+
+    const isEmail = identifier.includes("@");
+
+    if (isEmail) {
+      user = await this.enterpriseRepository.findByEmail(identifier);
+      userType = "enterprise";
+
+      if (!user) {
+        user = await this.employeeRepository.findByEmail(identifier);
+        userType = "employee";
+      }
+    } else {
+      const digits = this.onlyDigits(identifier);
+
+      user = await this.enterpriseRepository.findByCnpjCpf(digits);
+      userType = "enterprise";
+
+      if (!user) {
+        user = await this.employeeRepository.findByCnpjCpf(digits);
+        userType = "employee";
+      }
     }
 
-    const passwordMatch = await compare(password, employee.password);
+    if (!user) {
+      throw new AppError("Identificador ou senha incorretos", 401);
+    }
 
+    const passwordMatch = await compare(password, user.password);
     if (!passwordMatch) {
-      throw new AppError("E-mail ou senha incorretos", 401);
+      throw new AppError("Identificador ou senha incorretos", 401);
     }
 
     const secretKey = process.env.JWT_SECRET || "default_secret";
-    const token = sign({}, secretKey, {
-      subject: employee.id,
+    const token = sign({ id: user.id, type: userType }, secretKey, {
+      subject: user.id.toString(),
       expiresIn: "1d",
     });
 
-    const tokenReturn: IResponse = {
-      token,
-      Employee: {
-        name: employee.name,
-        email: employee.email,
+    return {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email ?? null,
+        type: userType as "enterprise" | "employee",
       },
+      token,
     };
-
-    return tokenReturn;
   }
 }

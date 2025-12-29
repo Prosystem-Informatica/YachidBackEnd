@@ -1,23 +1,19 @@
 import { inject, injectable } from "tsyringe";
 import { hash } from "bcryptjs";
 import { AppError } from "../../../../shared/errors/AppError";
-import { Request, Response } from "express-serve-static-core";
-import { ParsedQs } from "qs";
 import { Enterprise } from "../../entities/Enterprise";
 import { ICreateEnterpriseDTO } from "../../dtos/ICreateEnterpriseDTO";
 import { IEnterpriseRepository } from "../../repositories/IEnterpriseRepository";
+import { IEmployeeRepository } from "../../../employee/repositories/IEmployeeRepository";
 
 @injectable()
 export class CreateEnterpriseUseCase {
-  static handle(
-    req: Request<{}, any, any, ParsedQs, Record<string, any>>,
-    res: Response<any, Record<string, any>, number>
-  ): unknown {
-    throw new Error("Method not implemented.");
-  }
   constructor(
     @inject("EnterpriseRepository")
-    private enterpriseRepository: IEnterpriseRepository
+    private enterpriseRepository: IEnterpriseRepository,
+
+    @inject("EmployeeRepository")
+    private employeeRepository: IEmployeeRepository
   ) {}
 
   async execute({
@@ -30,12 +26,25 @@ export class CreateEnterpriseUseCase {
     branches,
     phone,
   }: ICreateEnterpriseDTO): Promise<Enterprise> {
-    const enterpriseAlreadyExists = await this.enterpriseRepository.findByEmail(
+    const emailExistsInEnterprise = await this.enterpriseRepository.findByEmail(
+      email
+    );
+    const emailExistsInEmployee = await this.employeeRepository.findByEmail(
       email
     );
 
-    if (enterpriseAlreadyExists) {
-      throw new AppError("Empresa já existe", 400);
+    if (emailExistsInEnterprise || emailExistsInEmployee) {
+      throw new AppError("E-mail já está em uso por outro usuário", 400);
+    }
+
+    const cnpjCpfExistsInEnterprise =
+      await this.enterpriseRepository.findByCnpjCpf(cnpj_cpf);
+    const cnpjCpfExistsInEmployee = await this.employeeRepository.findByCnpjCpf(
+      cnpj_cpf
+    );
+
+    if (cnpjCpfExistsInEnterprise || cnpjCpfExistsInEmployee) {
+      throw new AppError("CNPJ/CPF já está cadastrado em outro usuário", 400);
     }
 
     const passwordHash = await hash(password, 8);

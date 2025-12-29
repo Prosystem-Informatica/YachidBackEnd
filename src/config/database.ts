@@ -14,6 +14,7 @@ import { ProductImage } from "../modules/product/productImage/entities/ProductIm
 import { ProductPrice } from "../modules/product/productPrice/entities/ProductPrice";
 import { ProductFiscal } from "../modules/product/productFiscal/entities/ProductFiscal";
 import { Manufacturer } from "../modules/product/manufacturer/entities/Manufacturer.entity";
+import { PasswordReset } from "../modules/auth/entities/PasswordReset";
 
 export const AppDataSource = new DataSource({
   type: env.dbType,
@@ -33,6 +34,7 @@ export const AppDataSource = new DataSource({
     NFeXML,
     Category,
     Manufacturer,
+    PasswordReset,
 
     //Product Entities :P
     Product,
