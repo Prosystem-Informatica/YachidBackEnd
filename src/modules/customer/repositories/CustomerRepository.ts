@@ -20,6 +20,8 @@ export class CustomerRepository implements ICustomerRepository {
     status,
     restriction,
     credit,
+    inscricao_estadual,
+    person_type,
     address,
   }: ICreateCustomerDTO): Promise<Customer> {
     const customer = this.repository.create({
@@ -32,6 +34,8 @@ export class CustomerRepository implements ICustomerRepository {
       restriction,
       credit: credit ?? undefined,
       address,
+      person_type,
+      inscricao_estadual,
     });
 
     await this.repository.save(customer);

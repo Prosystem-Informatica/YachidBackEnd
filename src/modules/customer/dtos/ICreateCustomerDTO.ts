@@ -8,4 +8,6 @@ export interface ICreateCustomerDTO {
   restriction: boolean;
   credit?: number | null;
   address?: string | null;
+  person_type: "F" | "J";
+  inscricao_estadual?: string | null;
 }

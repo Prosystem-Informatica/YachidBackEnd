@@ -21,6 +21,8 @@ export class CreateCustomerController {
       restriction,
       credit,
       address,
+      person_type,
+      inscricao_estadual,
     } = req.body;
 
     if (address && typeof address === "object") {
@@ -39,6 +41,8 @@ export class CreateCustomerController {
       restriction,
       credit,
       address,
+      person_type,
+      inscricao_estadual,
     });
 
     return res.status(201).json(customer);
