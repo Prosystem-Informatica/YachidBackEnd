@@ -2,6 +2,12 @@ import { inject, injectable } from "tsyringe";
 import { ICustomerRepository } from "../../repositories/ICustomerRepository";
 import { Customer } from "../../entities/Customer";
 
+interface IListFilters {
+  search?: string;
+  status?: string;
+  partner_type?: string;
+}
+
 @injectable()
 export class ListCustomersUseCase {
   constructor(
@@ -9,8 +15,7 @@ export class ListCustomersUseCase {
     private customerRepository: ICustomerRepository
   ) {}
 
-  async execute(): Promise<Customer[]> {
-    const customers = await this.customerRepository.list();
-    return customers;
+  async execute(filters?: IListFilters): Promise<Customer[]> {
+    return this.customerRepository.list(filters);
   }
 }

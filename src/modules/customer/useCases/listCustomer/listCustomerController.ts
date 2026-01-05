@@ -4,9 +4,20 @@ import { ListCustomersUseCase } from "./listCustomerUseCase";
 
 export class ListCustomersController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const listCustomersUseCase = container.resolve(ListCustomersUseCase);
-    const customers = await listCustomersUseCase.execute();
+    try {
+      const { search, status, partner_type } = req.query;
 
-    return res.json(customers);
+      const listCustomersUseCase = container.resolve(ListCustomersUseCase);
+      const customers = await listCustomersUseCase.execute({
+        search: search as string,
+        status: status as string,
+        partner_type: partner_type as string,
+      });
+
+      return res.json(customers);
+    } catch (error) {
+      console.error("❌ Erro ao listar clientes:", error);
+      return res.status(500).json({ message: "Erro ao listar clientes" });
+    }
   }
 }

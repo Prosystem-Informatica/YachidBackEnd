@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import { PasswordResetRepository } from "../../repositories/PasswordResetRepository";
 import { IEnterpriseRepository } from "../../../enterprise/repositories/IEnterpriseRepository";
 import { IEmployeeRepository } from "../../../employee/repositories/IEmployeeRepository";
+import { AppError } from "../../../../shared/errors/AppError";
 
 @injectable()
 export class ForgotPasswordUseCase {
@@ -27,7 +28,9 @@ export class ForgotPasswordUseCase {
       (await this.enterpriseRepository.findByCnpjCpf(normalized)) ||
       (await this.employeeRepository.findByCnpjCpf(normalized));
 
-    if (!user) return;
+    if (!user) {
+      throw new AppError("Usuário não encontrado", 404);
+    }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);

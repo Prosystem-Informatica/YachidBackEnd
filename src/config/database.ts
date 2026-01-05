@@ -13,7 +13,6 @@ import { ProductComposition } from "../modules/product/productComposition/entiti
 import { ProductImage } from "../modules/product/productImage/entities/ProductImage";
 import { ProductPrice } from "../modules/product/productPrice/entities/ProductPrice";
 import { ProductFiscal } from "../modules/product/productFiscal/entities/ProductFiscal";
-import { Manufacturer } from "../modules/product/manufacturer/entities/Manufacturer.entity";
 import { PasswordReset } from "../modules/auth/entities/PasswordReset";
 
 export const AppDataSource = new DataSource({
@@ -33,7 +32,6 @@ export const AppDataSource = new DataSource({
     InvoiceItem,
     NFeXML,
     Category,
-    Manufacturer,
     PasswordReset,
 
     //Product Entities :P

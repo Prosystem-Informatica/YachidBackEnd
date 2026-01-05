@@ -13,7 +13,6 @@ import {
 } from "typeorm";
 import { Category } from "../../category/entities/Category";
 import { Enterprise } from "../../../enterprise/entities/Enterprise";
-import { Manufacturer } from "../../manufacturer/entities/Manufacturer.entity";
 import { ProductFiscal } from "../../productFiscal/entities/ProductFiscal";
 import { ProductPrice } from "../../productPrice/entities/ProductPrice";
 import { ProductImage } from "../../productImage/entities/ProductImage";
@@ -58,10 +57,6 @@ export class Product {
 
   @Column({ type: "varchar", length: 100, nullable: true })
   stock_location?: string | null;
-
-  @ManyToOne(() => Manufacturer, { nullable: true })
-  @JoinColumn({ name: "manufacturer_id" })
-  manufacturer?: Manufacturer;
 
   @Column({ nullable: true })
   manufacturer_id?: number;

@@ -28,8 +28,10 @@ export class CreateCustomerUseCase {
     status,
     restriction,
     credit,
+    address,
     inscricao_estadual,
     person_type,
+    partner_type,
   }: ICreateCustomerDTO): Promise<Customer> {
     const customerAlreadyExists = await this.customerRepository.findByName(
       name
@@ -50,6 +52,8 @@ export class CreateCustomerUseCase {
       credit,
       inscricao_estadual,
       person_type,
+      address,
+      partner_type,
     });
 
     return customer;

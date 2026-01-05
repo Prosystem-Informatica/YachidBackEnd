@@ -28,8 +28,11 @@ export class Customer {
   @Column({ type: "varchar", length: 30, nullable: true })
   inscricao_estadual?: string | null;
 
-  @Column({ type: "varchar", length: 100 })
-  enterprise_name!: string;
+  @Column({ type: "varchar", length: 100, nullable: true })
+  enterprise_name?: string | null;
+
+  @Column({ type: "varchar", length: 20, default: "cliente" })
+  partner_type!: string;
 
   @Column({ default: true })
   status!: boolean;
