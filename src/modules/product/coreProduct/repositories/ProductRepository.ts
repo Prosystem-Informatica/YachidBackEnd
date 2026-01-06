@@ -46,7 +46,7 @@ export class ProductRepository implements IProductRepository {
       where: { id },
       relations: [
         "category",
-        "manufacturer",
+        "supplier",
         "fiscalData",
         "prices",
         "images",
@@ -57,7 +57,7 @@ export class ProductRepository implements IProductRepository {
 
   async findAll(): Promise<Product[]> {
     return await this.repository.find({
-      relations: ["category", "manufacturer"],
+      relations: ["category", "supplier"],
       order: { id: "DESC" },
     });
   }
@@ -65,7 +65,7 @@ export class ProductRepository implements IProductRepository {
   async findByEnterpriseId(enterprise_id: number): Promise<Product[]> {
     return await this.repository.find({
       where: { enterprise_id },
-      relations: ["category", "manufacturer"],
+      relations: ["category", "supplier"],
       order: { id: "DESC" },
     });
   }
@@ -73,14 +73,14 @@ export class ProductRepository implements IProductRepository {
   async findByName(name: string): Promise<Product | null> {
     return await this.repository.findOne({
       where: { name },
-      relations: ["category", "manufacturer"],
+      relations: ["category", "supplier"],
     });
   }
 
   async findByCategory(category_id: number): Promise<Product[]> {
     return await this.repository.find({
       where: { category_id },
-      relations: ["category", "manufacturer"],
+      relations: ["category", "supplier"],
     });
   }
 
@@ -89,7 +89,7 @@ export class ProductRepository implements IProductRepository {
       where: { id },
       relations: [
         "category",
-        "manufacturer",
+        "supplier",
         "fiscalData",
         "prices",
         "images",

@@ -11,8 +11,8 @@ import { Product } from "../../coreProduct/entities/Product";
 
 @Entity("product_images")
 export class ProductImage {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn({ type: "bigint" })
+  id!: string;
 
   @Column()
   product_id?: number;
@@ -21,8 +21,8 @@ export class ProductImage {
   @JoinColumn({ name: "product_id" })
   product?: Product;
 
-  @Column({ type: "varchar", length: 255 })
-  image_url?: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  image_url?: string | null;
 
   @Column({ type: "varchar", length: 150, nullable: true })
   caption?: string;

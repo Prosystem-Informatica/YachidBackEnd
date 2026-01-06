@@ -64,15 +64,15 @@ export class CreateProductUseCase {
         enterprise_id: data.enterprise_id,
         category_id: data.category_id ?? undefined,
         code: data.code,
-        name: data.name,
+        name: data.name.trim(),
         barcode: data.barcode ?? "SEM GTIN",
         unit: data.unit ?? "UN",
         manufacturer_id: data.manufacturer_id ?? undefined,
         type: data.type ?? undefined,
-        stock_location: data.stock_location ?? undefined,
+        stock_location: data.stock_location ?? "Não informado",
         weight_gross: data.weight_gross ?? 0,
         weight_net: data.weight_net ?? 0,
-        packaging: data.packaging ?? undefined,
+        packaging: data.packaging ?? "",
         stock_quantity: data.stock_quantity ?? 0,
         stock_minimum: data.stock_minimum ?? 0,
         stock_maximum: data.stock_maximum ?? 0,
@@ -92,7 +92,7 @@ export class CreateProductUseCase {
         await queryRunner.manager.save(ProductFiscal, fiscal);
       }
 
-      if (data.prices && data.prices.length > 0) {
+      if (data.prices?.length) {
         const prices = data.prices.map((price) =>
           queryRunner.manager.create(ProductPrice, {
             ...price,
@@ -102,20 +102,24 @@ export class CreateProductUseCase {
         await queryRunner.manager.save(ProductPrice, prices);
       }
 
-      if (data.images && data.images.length > 0) {
+      if (data.images?.length) {
         const images = data.images.map((image) =>
           queryRunner.manager.create(ProductImage, {
-            ...image,
             product_id: savedProduct.id,
-            image_url: image.image_url, // Aqui é onde vamos salvar o caminho da imagem
+            image_url: image.image_url ?? null,
+            caption: image.caption ?? "",
+            is_main: image.is_main ?? false,
+            order: image.order ?? 0,
+            active: image.active ?? true,
           })
         );
         await queryRunner.manager.save(ProductImage, images);
       }
 
-      if (data.compositions && data.compositions.length > 0) {
-        const compositionRepo = AppDataSource.getRepository(ProductComposition);
-
+      // Composições
+      if (data.compositions?.length) {
+        const compositionRepo =
+          queryRunner.manager.getRepository(ProductComposition);
         const compositionsToLink: ProductComposition[] = [];
 
         for (const compData of data.compositions) {
@@ -127,8 +131,8 @@ export class CreateProductUseCase {
 
           if (!composition) {
             composition = compositionRepo.create({
-              name: compData.name,
-              description: compData.description,
+              name: compData.name ?? "Sem nome",
+              description: compData.description ?? "",
               quantity: compData.quantity ?? 1,
               component_cost: compData.component_cost ?? 0,
               active: compData.active ?? true,
@@ -153,15 +157,32 @@ export class CreateProductUseCase {
           "images",
           "compositions",
           "category",
-          "manufacturer",
+          "supplier",
         ],
       });
 
       return fullProduct!;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
+    } catch (error: unknown) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      let message = "Erro inesperado ao salvar o produto.";
+
+      if (error && typeof error === "object") {
+        const err = error as any;
+
+        if (err.code === "ER_NO_DEFAULT_FOR_FIELD") {
+          message = "Campo obrigatório não preenchido.";
+        } else if (err.code === "ER_DUP_ENTRY") {
+          message = "Código ou nome de produto já existe.";
+        } else if (typeof err.message === "string") {
+          message = err.message;
+        }
+      }
+
       console.error("❌ Erro ao criar produto completo:", error);
-      throw new AppError("Erro ao criar produto completo", 500);
+      throw new AppError(message, 500);
     } finally {
       await queryRunner.release();
     }

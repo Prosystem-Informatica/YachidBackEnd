@@ -17,6 +17,7 @@ import { ProductFiscal } from "../../productFiscal/entities/ProductFiscal";
 import { ProductPrice } from "../../productPrice/entities/ProductPrice";
 import { ProductImage } from "../../productImage/entities/ProductImage";
 import { ProductComposition } from "../../productComposition/entities/ProductComposition";
+import { Customer } from "../../../customer/entities/Customer";
 
 @Entity("products")
 export class Product {
@@ -114,6 +115,10 @@ export class Product {
     onDelete: "CASCADE",
   })
   images?: ProductImage[];
+
+  @ManyToOne(() => Customer)
+  @JoinColumn({ name: "manufacturer_id" })
+  supplier?: Customer;
 
   @ManyToMany(() => ProductComposition, { eager: true })
   @JoinTable({
