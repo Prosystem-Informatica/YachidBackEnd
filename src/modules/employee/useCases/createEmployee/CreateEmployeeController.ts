@@ -10,7 +10,8 @@ export class CreateEmployeeController {
       password,
       phone,
       cnpj_cpf,
-      enterprise_name,
+      enterpriseId,
+      subEnterpriseIds,
       status,
       role,
     } = req.body;
@@ -23,7 +24,8 @@ export class CreateEmployeeController {
       password,
       phone,
       cnpj_cpf,
-      enterprise_name,
+      enterpriseId,
+      subEnterpriseIds,
       status,
       role,
     });

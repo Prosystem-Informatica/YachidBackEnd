@@ -4,7 +4,8 @@ export interface ICreateEmployeeDTO {
   password: string;
   phone?: string | null;
   cnpj_cpf?: string | null;
-  enterprise_name: string;
-  status: boolean;
+  enterpriseId: number;
+  subEnterpriseIds?: number[];
+  status?: boolean;
   role: string;
 }

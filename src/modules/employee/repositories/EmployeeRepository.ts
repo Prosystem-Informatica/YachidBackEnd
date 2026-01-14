@@ -17,9 +17,10 @@ export class EmployeeRepository implements IEmployeeRepository {
     password,
     phone,
     cnpj_cpf,
-    enterprise_name,
-    status,
+    enterpriseId,
+    status = true,
     role,
+    subEnterpriseIds,
   }: ICreateEmployeeDTO): Promise<Employee> {
     const employee = this.repository.create({
       name,
@@ -27,10 +28,10 @@ export class EmployeeRepository implements IEmployeeRepository {
       password,
       phone,
       cnpj_cpf,
-      enterprise_name,
-      status,
       role,
+      status,
     });
+
     await this.repository.save(employee);
     return employee;
   }

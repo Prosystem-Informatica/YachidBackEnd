@@ -2,16 +2,22 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
+  ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from "typeorm";
-import { SubEnterprise } from "./SubEnterprise";
-import { Employee } from "../../employee/entities/Employee";
+import { Enterprise } from "./Enterprise";
 
-@Entity("enterprises")
-export class Enterprise {
+@Entity("sub_enterprises")
+export class SubEnterprise {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.subEnterprises, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "enterprise_id" })
+  enterprise!: Enterprise;
 
   @Column({ type: "varchar", length: 100 })
   name!: string;
@@ -19,29 +25,8 @@ export class Enterprise {
   @Column({ type: "varchar", length: 20 })
   cnpj_cpf!: string;
 
-  @Column({ type: "varchar", length: 20, nullable: true })
-  phone?: string | null;
-
-  @Column({ type: "longtext", nullable: true })
-  logo?: string | null;
-
-  @Column({ default: true })
-  status!: boolean;
-
   @Column({ type: "varchar", length: 1, default: "2" })
   environment!: "1" | "2";
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  cert_filename?: string | null;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  cert_password?: string | null;
-
-  @Column({ type: "varchar", length: 20, nullable: true })
-  csc_id?: string | null;
-
-  @Column({ type: "varchar", length: 255, nullable: true })
-  csc_token?: string | null;
 
   @Column({ type: "varchar", length: 50, nullable: true })
   tipo_regime?: string | null;
@@ -93,11 +78,8 @@ export class Enterprise {
     cbs?: number;
   } | null;
 
-  @OneToMany(() => SubEnterprise, (sub) => sub.enterprise)
-  subEnterprises?: SubEnterprise[];
-
-  @OneToMany(() => Employee, (emp) => emp.enterprise)
-  employees?: Employee[];
+  @Column({ default: true })
+  active!: boolean;
 
   @CreateDateColumn()
   created_at!: Date;

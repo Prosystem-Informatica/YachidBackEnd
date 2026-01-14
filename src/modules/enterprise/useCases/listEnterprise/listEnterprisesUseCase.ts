@@ -10,7 +10,11 @@ export class ListEnterprisesUseCase {
   ) {}
 
   async execute(): Promise<Enterprise[]> {
-    const enterprises = await this.enterpriseRepository.list();
-    return enterprises;
+    const enterprises =
+      await this.enterpriseRepository.listWithSubEnterprises();
+
+    const activeEnterprises = enterprises.filter((e) => e.status);
+
+    return activeEnterprises;
   }
 }
