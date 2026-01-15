@@ -4,17 +4,18 @@ import { AuthenticateEmployeeUseCase } from "./AuthenticateEmployeeUseCase";
 
 export class AuthenticateEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { identifier, password } = req.body;
+    try {
+      const { identifier, password } = req.body;
 
-    const authenticateEmployeeUseCase = container.resolve(
-      AuthenticateEmployeeUseCase
-    );
+      const authenticateUseCase = container.resolve(AuthenticateEmployeeUseCase);
 
-    const tokenResponse = await authenticateEmployeeUseCase.execute({
-      identifier,
-      password,
-    });
+      const result = await authenticateUseCase.execute({ identifier, password });
 
-    return res.json(tokenResponse);
+      return res.status(200).json(result);
+    } catch (err: any) {
+      return res
+        .status(err.statusCode || 500)
+        .json({ message: err.message || "Erro ao autenticar usuário" });
+    }
   }
 }

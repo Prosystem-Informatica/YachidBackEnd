@@ -6,10 +6,8 @@ import {
   ManyToMany,
   JoinTable,
   CreateDateColumn,
-  JoinColumn,
 } from "typeorm";
 import { Enterprise } from "../../enterprise/entities/Enterprise";
-import { SubEnterprise } from "../../enterprise/entities/SubEnterprise";
 
 @Entity("employees")
 export class Employee {
@@ -37,23 +35,16 @@ export class Employee {
   @Column({ default: true })
   status!: boolean;
 
-  // Empresa principal
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.employees, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "enterprise_id" })
+  @ManyToOne(() => Enterprise)
   enterprise!: Enterprise;
 
-  @ManyToMany(() => SubEnterprise)
+  @ManyToMany(() => Enterprise)
   @JoinTable({
     name: "employee_sub_enterprises",
     joinColumn: { name: "employee_id", referencedColumnName: "id" },
-    inverseJoinColumn: {
-      name: "sub_enterprise_id",
-      referencedColumnName: "id",
-    },
+    inverseJoinColumn: { name: "enterprise_id", referencedColumnName: "id" },
   })
-  subEnterprises?: SubEnterprise[];
+  subEnterprises!: Enterprise[];
 
   @CreateDateColumn()
   created_at!: Date;

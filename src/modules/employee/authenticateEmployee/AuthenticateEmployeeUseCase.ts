@@ -34,7 +34,6 @@ export class AuthenticateEmployeeUseCase {
 
   async execute({ identifier, password }: IRequest): Promise<IResponse> {
     let user = null;
-
     const isEmail = identifier.includes("@");
 
     if (isEmail) {
@@ -58,11 +57,14 @@ export class AuthenticateEmployeeUseCase {
     }
 
     const secretKey = process.env.JWT_SECRET || "default_secret";
+
+    const subEnterpriseIds = user.subEnterprises?.map((e) => e.id) || [];
+
     const token = sign(
       { id: user.id, enterprise_id: user.enterprise.id, role: user.role },
       secretKey,
       {
-        subject: user.id.toString(),
+        subject: user.id,
         expiresIn: "1d",
       }
     );
@@ -74,6 +76,8 @@ export class AuthenticateEmployeeUseCase {
         email: user.email,
         role: user.role,
         enterprise_id: user.enterprise.id,
+        sub_enterprises_access:
+          subEnterpriseIds.length > 0 ? subEnterpriseIds : null,
       },
       token,
     };

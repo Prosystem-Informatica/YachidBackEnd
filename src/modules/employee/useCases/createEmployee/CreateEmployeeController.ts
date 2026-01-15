@@ -4,32 +4,44 @@ import { CreateEmployeeUseCase } from "./CreateEmployeeUseCase";
 
 export class CreateEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const {
-      name,
-      email,
-      password,
-      phone,
-      cnpj_cpf,
-      enterpriseId,
-      subEnterpriseIds,
-      status,
-      role,
-    } = req.body;
+    try {
+      const {
+        name,
+        email,
+        password,
+        phone,
+        cnpj_cpf,
+        enterpriseId,
+        subEnterpriseIds,
+        status = true,
+        role,
+      } = req.body;
 
-    const createEmployeeUseCase = container.resolve(CreateEmployeeUseCase);
+      const subIds: number[] = Array.isArray(subEnterpriseIds)
+        ? subEnterpriseIds.map((id) => Number(id))
+        : [];
 
-    const employee = await createEmployeeUseCase.execute({
-      name,
-      email,
-      password,
-      phone,
-      cnpj_cpf,
-      enterpriseId,
-      subEnterpriseIds,
-      status,
-      role,
-    });
+      const createEmployeeUseCase = container.resolve(CreateEmployeeUseCase);
 
-    return res.status(201).json(employee);
+      const employee = await createEmployeeUseCase.execute({
+        name,
+        email,
+        password,
+        phone,
+        cnpj_cpf,
+        enterpriseId,
+        subEnterpriseIds: subIds,
+        status,
+        role,
+      });
+
+      const { password: _, ...result } = employee;
+
+      return res.status(201).json(result);
+    } catch (err: any) {
+      return res.status(err.statusCode || 500).json({
+        message: err.message || "Erro ao criar funcionário",
+      });
+    }
   }
 }
