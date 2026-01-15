@@ -4,6 +4,7 @@ import { CreateEmployeeController } from "../useCases/createEmployee/CreateEmplo
 import { AuthenticateEmployeeController } from "../authenticateEmployee/AuthenticateEmployeeController";
 import { UpdateEmployeeController } from "../useCases/updateEmployee/UpdateEmployeeController";
 import { DeleteEmployeeController } from "../useCases/deleteEmployee/DeleteEmployeeController";
+import { GetSubEnterprisesController } from "../useCases/getSubEnterprise/GetSubEnterprisesController";
 
 const employeeRoutes = Router();
 
@@ -12,6 +13,7 @@ const listEmployeesController = new ListEmployeesController();
 const authenticateEmployeeController = new AuthenticateEmployeeController();
 const updateEmployeeController = new UpdateEmployeeController();
 const deleteEmployeeController = new DeleteEmployeeController();
+const getSubEnterprisesController = new GetSubEnterprisesController();
 
 employeeRoutes.post("/", (req, res) =>
   createEmployeeController.handle(req, res)
@@ -24,6 +26,11 @@ employeeRoutes.post("/login", (req, res) =>
 );
 
 employeeRoutes.put("/:id", updateEmployeeController.handle);
+
 employeeRoutes.delete("/:id", deleteEmployeeController.handle);
+
+employeeRoutes.get("/:id/sub-enterprises", (req, res) =>
+  getSubEnterprisesController.handle(req, res)
+);
 
 export { employeeRoutes };

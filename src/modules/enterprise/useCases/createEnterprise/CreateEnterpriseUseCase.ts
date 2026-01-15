@@ -33,7 +33,7 @@ export class CreateEnterpriseUseCase {
     inscricao_municipal,
     contabilidade,
     receita,
-  }: ICreateEnterpriseDTO): Promise<Enterprise> {
+  }: ICreateEnterpriseDTO): Promise<any> {
     const cnpjCpfExistsInEnterprise =
       await this.enterpriseRepository.findByCnpjCpf(cnpj_cpf);
 
@@ -65,7 +65,7 @@ export class CreateEnterpriseUseCase {
       receita,
     });
 
-    await this.enterpriseRepository.createSubEnterprise({
+    const subEnterprise = await this.enterpriseRepository.createSubEnterprise({
       enterprise,
       name: `${enterprise.name} - Matriz`,
       cnpj_cpf: enterprise.cnpj_cpf,
@@ -78,6 +78,9 @@ export class CreateEnterpriseUseCase {
       receita: enterprise.receita,
     });
 
-    return enterprise;
+    return {
+      ...enterprise,
+      subEnterprise,
+    };
   }
 }

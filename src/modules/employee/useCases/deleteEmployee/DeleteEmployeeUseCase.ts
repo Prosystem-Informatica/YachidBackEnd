@@ -4,7 +4,10 @@ import { AppError } from "../../../../shared/errors/AppError";
 
 @injectable()
 export class DeleteEmployeeUseCase {
-  constructor(@inject("EmployeeRepository") private employeeRepository: IEmployeeRepository) {}
+  constructor(
+    @inject("EmployeeRepository")
+    private employeeRepository: IEmployeeRepository
+  ) {}
 
   async execute(id: string): Promise<void> {
     const employee = await this.employeeRepository.update(id, {}); // verifica se existe

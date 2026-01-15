@@ -38,8 +38,11 @@ export class CreateEmployeeUseCase {
     if (emailExists) throw new AppError("E-mail já cadastrado", 400);
 
     if (cnpj_cpf) {
-      const cpfExistsInEmployee = await this.employeeRepository.findByCnpjCpf(cnpj_cpf);
-      const cpfExistsInEnterprise = await this.enterpriseRepository.findByCnpjCpf(cnpj_cpf);
+      const cpfExistsInEmployee = await this.employeeRepository.findByCnpjCpf(
+        cnpj_cpf
+      );
+      const cpfExistsInEnterprise =
+        await this.enterpriseRepository.findByCnpjCpf(cnpj_cpf);
 
       if (cpfExistsInEmployee || cpfExistsInEnterprise) {
         throw new AppError("CPF/CNPJ já cadastrado em outro usuário", 400);

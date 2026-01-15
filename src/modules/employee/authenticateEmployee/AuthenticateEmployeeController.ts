@@ -7,9 +7,14 @@ export class AuthenticateEmployeeController {
     try {
       const { identifier, password } = req.body;
 
-      const authenticateUseCase = container.resolve(AuthenticateEmployeeUseCase);
+      const authenticateUseCase = container.resolve(
+        AuthenticateEmployeeUseCase
+      );
 
-      const result = await authenticateUseCase.execute({ identifier, password });
+      const result = await authenticateUseCase.execute({
+        identifier,
+        password,
+      });
 
       return res.status(200).json(result);
     } catch (err: any) {

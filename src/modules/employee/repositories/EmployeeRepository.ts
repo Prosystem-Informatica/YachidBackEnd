@@ -69,7 +69,9 @@ export class EmployeeRepository implements IEmployeeRepository {
   }
 
   async list(): Promise<Employee[]> {
-    return this.repository.find({ relations: ["enterprise", "subEnterprises"] });
+    return this.repository.find({
+      relations: ["enterprise", "subEnterprises"],
+    });
   }
 
   async update(
@@ -83,10 +85,15 @@ export class EmployeeRepository implements IEmployeeRepository {
     }
 
     if (subEnterpriseIds) {
-      const employee = await this.repository.findOne({ where: { id }, relations: ["subEnterprises"] });
+      const employee = await this.repository.findOne({
+        where: { id },
+        relations: ["subEnterprises"],
+      });
       if (!employee) throw new Error("Employee não encontrado");
 
-      employee.subEnterprises = subEnterpriseIds.map((eid) => ({ id: eid } as any));
+      employee.subEnterprises = subEnterpriseIds.map(
+        (eid) => ({ id: eid } as any)
+      );
       await this.repository.save(employee);
       return employee;
     }
@@ -106,5 +113,21 @@ export class EmployeeRepository implements IEmployeeRepository {
 
   async findOne(options: any): Promise<Employee | null> {
     return this.repository.findOne(options);
+  }
+
+  async getSubEnterprises(
+    employeeId: string
+  ): Promise<{ id: number; name?: string }[]> {
+    const employee = await this.repository.findOne({
+      where: { id: employeeId },
+      relations: ["subEnterprises"],
+      select: ["id"],
+    });
+
+    if (!employee) {
+      throw new Error("Employee não encontrado");
+    }
+
+    return employee.subEnterprises || [];
   }
 }
