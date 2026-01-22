@@ -1,18 +1,26 @@
 import { Request, Response } from "express";
 import { container } from "tsyringe";
-import { AuthenticateUserUseCase } from "./AuthenticateEmployeeUseCase";
+import { AuthenticateEmployeeUseCase } from "./AuthenticateEmployeeUseCase";
 
-export class AuthenticateUserController {
+export class AuthenticateEmployeeController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { identifier, password } = req.body;
+    try {
+      const { identifier, password } = req.body;
 
-    const authenticateUserUseCase = container.resolve(AuthenticateUserUseCase);
+      const authenticateUseCase = container.resolve(
+        AuthenticateEmployeeUseCase
+      );
 
-    const tokenResponse = await authenticateUserUseCase.execute({
-      identifier,
-      password,
-    });
+      const result = await authenticateUseCase.execute({
+        identifier,
+        password,
+      });
 
-    return res.json(tokenResponse);
+      return res.status(200).json(result);
+    } catch (err: any) {
+      return res
+        .status(err.statusCode || 500)
+        .json({ message: err.message || "Erro ao autenticar usuário" });
+    }
   }
 }

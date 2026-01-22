@@ -1,16 +1,7 @@
-export interface ICreateEnterpriseDTO {
+export interface ICreateSubEnterpriseDTO {
+  enterpriseId: number;
   name: string;
-  status?: boolean;
-  logo?: string | null;
   cnpj_cpf: string;
-  phone?: string | null;
-
-  cert_filename?: string | null;
-  cert_password?: string | null;
-  csc_id?: string | null;
-  csc_token?: string | null;
-
-  environment?: "1" | "2";
 
   address?: {
     xLgr: string;

@@ -22,20 +22,20 @@ export class CreateEmployeeUseCase {
     password,
     phone,
     cnpj_cpf,
-    enterprise_name,
-    status,
+    enterpriseId,
+    subEnterpriseIds = [],
+    status = true,
     role,
   }: ICreateEmployeeDTO): Promise<Employee> {
-    const emailExistsInEmployee = await this.employeeRepository.findByEmail(
-      email
-    );
-    const emailExistsInEnterprise = await this.enterpriseRepository.findByEmail(
-      email
-    );
-
-    if (emailExistsInEmployee || emailExistsInEnterprise) {
-      throw new AppError("E-mail já está em uso por outro usuário", 400);
+    if (!name || !email || !password || !enterpriseId || !role) {
+      throw new AppError(
+        "Campos obrigatórios faltando: name, email, password, enterpriseId, role",
+        400
+      );
     }
+
+    const emailExists = await this.employeeRepository.findByEmail(email);
+    if (emailExists) throw new AppError("E-mail já cadastrado", 400);
 
     if (cnpj_cpf) {
       const cpfExistsInEmployee = await this.employeeRepository.findByCnpjCpf(
@@ -57,7 +57,8 @@ export class CreateEmployeeUseCase {
       password: passwordHash,
       phone,
       cnpj_cpf,
-      enterprise_name,
+      enterpriseId,
+      subEnterpriseIds,
       status,
       role,
     });

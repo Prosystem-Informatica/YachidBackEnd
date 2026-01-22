@@ -11,46 +11,54 @@ export class CreateEnterpriseController {
   }
 
   async handle(req: Request, res: Response): Promise<Response> {
-    let {
+    const {
       name,
-      email,
-      password,
       status,
       logo,
       cnpj_cpf,
-      branches,
       phone,
+      cert_filename,
+      cert_password,
+      csc_id,
+      csc_token,
+      environment,
       address,
+      tipo_regime,
+      codigo_cidade,
+      inscricao_estadual,
+      inscricao_municipal,
+      contabilidade,
+      receita,
     } = req.body;
-
-    if (address && typeof address === "object") {
-      address = JSON.stringify(address);
-    }
 
     const createEnterpriseUseCase = container.resolve(CreateEnterpriseUseCase);
 
     const enterprise = await createEnterpriseUseCase.execute({
       name,
-      email,
-      password,
       status,
       logo,
       cnpj_cpf,
-      branches,
       phone,
+      cert_filename,
+      cert_password,
+      csc_id,
+      csc_token,
+      environment,
       address,
+      tipo_regime,
+      codigo_cidade,
+      inscricao_estadual,
+      inscricao_municipal,
+      contabilidade,
+      receita,
     });
 
     return res.status(201).json(enterprise);
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
     const data = req.body;
-
-    if (data.address && typeof data.address === "object") {
-      data.address = JSON.stringify(data.address);
-    }
 
     const enterpriseUpdated = await this.enterpriseRepository.update(
       Number(id),
