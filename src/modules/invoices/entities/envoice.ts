@@ -38,7 +38,7 @@ export class Invoice {
   @Column({ type: "varchar", length: 20, default: "pending" })
   status!: "pending" | "authorized" | "denied" | "cancelled";
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   issued_at?: Date | null;
 
   @CreateDateColumn()

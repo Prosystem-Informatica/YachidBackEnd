@@ -28,7 +28,7 @@ export class NFeXML {
   @JoinColumn({ name: "invoice_id" })
   invoice!: Invoice;
 
-  @Column("longtext")
+  @Column("text")
   xml!: string;
 
   @Column({ type: "varchar", length: 50, nullable: true })
@@ -37,7 +37,7 @@ export class NFeXML {
   @Column("text", { nullable: true })
   configuracoes?: string | null;
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   issued_at?: Date | null;
 
   @CreateDateColumn()

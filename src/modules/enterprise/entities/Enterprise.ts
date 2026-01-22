@@ -22,7 +22,7 @@ export class Enterprise {
   @Column({ default: true })
   status!: boolean;
 
-  @Column({ type: "longtext", nullable: true })
+  @Column({ type: "text", nullable: true })
   logo?: string | null;
 
   @Column({ type: "varchar", length: 20 })
