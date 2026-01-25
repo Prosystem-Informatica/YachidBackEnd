@@ -5,10 +5,11 @@ import { AuthModule } from '../auth/auth.module';
 import { Employee } from './entities/employee.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EDatabase } from '../../config/db/database.config';
+import { UserModule } from '../user/user.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => AuthModule)],
+  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => AuthModule), forwardRef(() => UserModule)],
   controllers: [EmployeeController],
   providers: [EmployeeService],
   exports: [EmployeeService],

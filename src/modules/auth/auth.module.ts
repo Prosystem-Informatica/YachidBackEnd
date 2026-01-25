@@ -5,9 +5,11 @@ import { EmployeeService } from '../employee/employee.service';
 import { EmployeeModule } from '../employee/employee.module';
 import { forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EntrepreneurModule } from '../entrepreneur/entrepreneur.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [forwardRef(() => EmployeeModule)],
+  imports: [forwardRef(() => EmployeeModule), forwardRef(() => EntrepreneurModule), UserModule],
   providers: [AuthService, JwtService],
   controllers: [AuthController],
   exports: [JwtService]

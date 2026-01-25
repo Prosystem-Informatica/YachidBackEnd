@@ -1,6 +1,10 @@
-import {  IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { EmployeeRole } from "../entities/employee.entity";
 
-export type EmployeeStatus = 'ACTIVE' | 'INACTIVE';
+export enum EmployeeStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE',
+}
 
 export class CreateEmployeeDto {
 
@@ -14,10 +18,6 @@ export class CreateEmployeeDto {
 
     @IsNotEmpty()
     @IsString()
-    password: string;
-
-    @IsNotEmpty()
-    @IsString()
     phone: string;
 
     @IsNotEmpty()
@@ -25,18 +25,10 @@ export class CreateEmployeeDto {
     document: string;
 
     @IsNotEmpty()
-    @IsString()
+    @IsEnum({ message: 'Status inválido' })
     status: EmployeeStatus;
 
     @IsNotEmpty()
-    @IsString()
-    role: string;
-
-    @IsNotEmpty()
-    @IsString()
-    enterprise_id: string;
-
-    @IsNotEmpty()
-    @IsString()
-    address_id: string;
+    @IsEnum({ message: 'Defina o cargo do funcionário' })
+    role: EmployeeRole;
 }

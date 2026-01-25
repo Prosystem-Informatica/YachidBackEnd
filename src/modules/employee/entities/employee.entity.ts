@@ -9,11 +9,16 @@ import {
     JoinColumn,
     OneToOne,
   } from "typeorm";
-  import { Enterprise } from "../../enterprise/entities/enterprise.entity";
-  // import { SubEnterprise } from "../../enterprise/entities/subEnterprise.entity";
-import { Address } from "src/modules/address/entities/address.entity";
+import { Enterprise } from "../../enterprise/entities/enterprise.entity";
 import * as createEmployeeDto from "../dto/create-employee.dto";
 import { Photo } from "src/modules/photos/entities/photo.entity";
+import { User } from "src/modules/user/entities/user.entity";
+
+
+export enum EmployeeRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
   
   @Entity("employees")
   export class Employee {
@@ -22,37 +27,30 @@ import { Photo } from "src/modules/photos/entities/photo.entity";
   
     @Column()
     name!: string;
-  
-    @Column({ unique: true })
-    email!: string;
-  
-    @Column()
-    password!: string;
-  
+    
     @Column()
     phone!: string;
   
     @Column()
     document!: string;
   
-    @Column()
-    role!: string;
+    @Column({ type: 'enum', enum: EmployeeRole })
+    role!: EmployeeRole;
   
-    @Column()
+    @Column({ type: 'enum', enum: createEmployeeDto.EmployeeStatus })
     status!: createEmployeeDto.EmployeeStatus;
   
-    // @ManyToOne(() => Enterprise, (enterprise) => enterprise.employees)
-    // @JoinColumn({ name: "enterprise_id" })
-    // enterprise!: Enterprise;
+    @ManyToOne(() => Enterprise)
+    @JoinColumn({ name: "enterprise_id" })
+    enterprise!: Enterprise;
   
     @CreateDateColumn({ type: "timestamp" })
     created_at!: string;
 
-
-    @OneToOne(() => Address)
-    @JoinColumn({ name: 'address_id' })
-    address: Address;
-
     @OneToOne(() => Photo)
     photo: Photo;
+
+    @OneToOne(() => User)
+    @JoinColumn({ name: "user_id" })
+    user: User;
   }

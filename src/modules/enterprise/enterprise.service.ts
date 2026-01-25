@@ -8,8 +8,6 @@ import { AddressService } from '../address/address.service';
 
 @Injectable()
 export class EnterpriseService {
-
-
     constructor(
     @InjectRepository(Enterprise, EDatabase.YACHID) 
     private readonly enterpriseRepository: Repository<Enterprise>,
@@ -19,6 +17,10 @@ export class EnterpriseService {
 
     async createEnterprise(createEnterpriseDto: CreateEnterpriseDto): Promise<any> {
         try {
+
+            console.log(createEnterpriseDto);
+
+            
 
             const address = await this.addressService.create(createEnterpriseDto.address);
 
