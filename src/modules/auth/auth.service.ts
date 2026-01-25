@@ -39,10 +39,10 @@ export class AuthService {
         if (!user || !user.password) {
             throw new UnauthorizedException('Email ou senha inválidos');
         }
-
-        if(!bcryptjs.compareSync(password, user.password)) {
-            throw new UnauthorizedException('Email ou senha inválidos');
-        }
+        //TODO: Implementar a comparação de senha com o bcrypt
+        // if(!bcryptjs.compareSync(password, user.password)) {
+        //     throw new UnauthorizedException('Email ou senha inválidos');
+        // }
 
         let userEntity: Entrepreneur | Employee | null = null;
 
@@ -61,11 +61,16 @@ export class AuthService {
         const token = await this.generateEmployeeTokens(user, userEntity);
 
         return {
-            token
+            token,
+            user: {
+              email: user.email,
+              role: user.role,
+              ...userEntity,
+            }
         };
     }
 
-    async generateEmployeeTokens(user: User, userEntity: Entrepreneur | Employee): Promise<{ accessToken: string }> {
+    async generateEmployeeTokens(user: User, userEntity: Entrepreneur | Employee): Promise<string> {
         const authSign = {
           name: userEntity.name,
           email: user.email,
@@ -81,9 +86,8 @@ export class AuthService {
           expiresIn: TWO_HOUR_IN_SECOUNDS,
         });
     
-        return {
-          accessToken,
-        };
+        return accessToken
+        
       }
 
     async registerEmployee(createUserDto: CreateUserDto, createEmployeeDto: CreateEmployeeDto) {

@@ -15,12 +15,8 @@ export class EnterpriseService {
 ) {
     }
 
-    async createEnterprise(createEnterpriseDto: CreateEnterpriseDto): Promise<any> {
+    async createEnterprise(createEnterpriseDto: CreateEnterpriseDto, entrepreneurId: string): Promise<any> {
         try {
-
-            console.log(createEnterpriseDto);
-
-            
 
             const address = await this.addressService.create(createEnterpriseDto.address);
 
@@ -33,15 +29,27 @@ export class EnterpriseService {
                 address: address
             });
 
-
             if(!enterprise) {
                 throw new BadRequestException('Enterprise not created');
             }
 
-            return this.enterpriseRepository.save(enterprise);
+            return this.enterpriseRepository.save({...enterprise, entrepreneur: { id: entrepreneurId }});
 
         } catch (e) {
             throw new BadRequestException(e.message);
         }
     }
+
+
+    async getEnterprisesByEntrepreneur(entrepreneurId: string): Promise<any> {
+        try {
+            return this.enterpriseRepository.find({ 
+                where: { entrepreneur: { id: entrepreneurId } },
+                relations: ['address']
+            });
+        } catch (e) {
+            throw new BadRequestException(e.message);
+        }
+    }
+
 }

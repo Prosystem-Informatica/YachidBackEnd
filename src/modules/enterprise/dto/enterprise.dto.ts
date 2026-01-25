@@ -4,16 +4,16 @@ import { CreateAddressDto } from "src/modules/address/dto/address.dto";
 
 export class CreateEnterpriseDto {
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Defina o documento da empresa' })
     document!: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Defina a razão social da empresa' })
     social_reason: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Defina o nome fantasia da empresa' })
     fantasy_name: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Defina o status da empresa' })
     @IsEnum(enterpriseEntity.EnterpriseStatus)
     status: enterpriseEntity.EnterpriseStatus;
 
@@ -26,10 +26,7 @@ export class CreateEnterpriseDto {
     @IsOptional()
     website?: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Defina o endereço da empresa' })
     address!: CreateAddressDto;
 
-    @IsNotEmpty()
-    @IsUUID()
-    entrepreneurId: string;
 }

@@ -21,7 +21,7 @@ import {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
   
-    @Column({unique: true, nullable: false})
+    @Column({ nullable: false})
     document!: string;
 
     @Column({nullable: false})
