@@ -8,36 +8,41 @@ import { AddressService } from '../address/address.service';
 
 @Injectable()
 export class EnterpriseService {
-  constructor(
-    @InjectRepository(Enterprise, EDatabase.YACHID)
+    constructor(
+    @InjectRepository(Enterprise, EDatabase.YACHID) 
     private readonly enterpriseRepository: Repository<Enterprise>,
-    private readonly addressService: AddressService,
-  ) {}
+    private readonly addressService: AddressService
+) {
+    }
 
-  async createEnterprise(
-    createEnterpriseDto: CreateEnterpriseDto,
-  ): Promise<any> {
-    try {
-      const address = await this.addressService.create(
-        createEnterpriseDto.address,
-      );
+    async createEnterprise(createEnterpriseDto: CreateEnterpriseDto): Promise<any> {
+        try {
 
-      if (!address) {
-        throw new BadRequestException('Address not created');
-      }
+            console.log(createEnterpriseDto);
 
-      const enterprise = this.enterpriseRepository.create({
-        ...createEnterpriseDto,
-        address: address,
-      });
+            
 
-      if (!enterprise) {
-        throw new BadRequestException('Enterprise not created');
-      }
+            const address = await this.addressService.create(createEnterpriseDto.address);
 
-      return this.enterpriseRepository.save(enterprise);
-    } catch (e) {
-      throw new BadRequestException(e.message);
+            if(!address) {
+                throw new BadRequestException('Address not created');
+            }
+
+            const enterprise = this.enterpriseRepository.create({
+                ...createEnterpriseDto,
+                address: address
+            });
+
+
+            if(!enterprise) {
+                throw new BadRequestException('Enterprise not created');
+            }
+
+            return this.enterpriseRepository.save(enterprise);
+
+        } catch (e) {
+            throw new BadRequestException(e.message);
+        }
     }
   }
 }

@@ -28,8 +28,6 @@ services:
       - DB_LOG=true
       - APP_PORT=3333
       - JWT_SECRET=r9T2m6K1br9T2m6K1br9T2m6K1b
-
-
 volumes:
   postgres:
     driver: local

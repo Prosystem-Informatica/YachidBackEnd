@@ -1,5 +1,6 @@
 import { IsEnum } from "class-validator";
 import { Address } from "src/modules/address/entities/address.entity";
+import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.entity";
 import { Photo } from "src/modules/photos/entities/photo.entity";
 import {
     Entity,
@@ -7,6 +8,7 @@ import {
     Column,
     OneToOne,
     JoinColumn,
+    ManyToOne,
   } from "typeorm";
 
   export enum EnterpriseStatus {
@@ -46,4 +48,8 @@ import {
     @OneToOne(() => Address)
     @JoinColumn({ name: 'address_id' })
     address: Address;
+
+    @ManyToOne(() => Entrepreneur)
+    @JoinColumn({ name: "entrepreneur_id" })
+    entrepreneur!: Entrepreneur;
   }

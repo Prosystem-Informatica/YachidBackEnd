@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 import * as enterpriseEntity from "../entities/enterprise.entity";
 import { CreateAddressDto } from "src/modules/address/dto/address.dto";
 
@@ -28,4 +28,8 @@ export class CreateEnterpriseDto {
 
     @IsNotEmpty()
     address!: CreateAddressDto;
+
+    @IsNotEmpty()
+    @IsUUID()
+    entrepreneurId: string;
 }

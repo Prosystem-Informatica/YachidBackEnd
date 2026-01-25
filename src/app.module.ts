@@ -10,6 +10,8 @@ import { AccountingModule } from './modules/accounting/accounting.module';
 import { RevenueTaxDetailsModule } from './modules/revenue-tax-details/revenue-tax-details.module';
 import { PhotosModule } from './modules/photos/photos.module';
 import { EnterpriseModule } from './modules/enterprise/enterprise.module';
+import { EntrepreneurModule } from './modules/entrepreneur/entrepreneur.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { EnterpriseModule } from './modules/enterprise/enterprise.module';
     RevenueTaxDetailsModule,
     EnterpriseModule,
     PhotosModule,
+    EntrepreneurModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
