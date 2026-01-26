@@ -31,4 +31,8 @@ export class CreateEmployeeDto {
     @IsNotEmpty()
     @IsEnum({ message: 'Defina o cargo do funcionário' })
     role: EmployeeRole;
+
+    @IsNotEmpty()
+    @IsString()
+    base64: string;
 }

@@ -5,7 +5,7 @@ import { Photo } from './entities/photo.entity';
 import { EDatabase } from 'src/config/db/database.config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Photo], EDatabase.YACHID)],
+  imports: [TypeOrmModule.forFeature([Photo], EDatabase.YACHID), ],
   providers: [PhotosService],
   exports: [PhotosService]
 })

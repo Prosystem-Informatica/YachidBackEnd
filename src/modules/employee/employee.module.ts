@@ -6,10 +6,11 @@ import { Employee } from './entities/employee.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EDatabase } from '../../config/db/database.config';
 import { UserModule } from '../user/user.module';
+import { PhotosModule } from '../photos/photos.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => AuthModule), forwardRef(() => UserModule)],
+  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => AuthModule), forwardRef(() => UserModule), forwardRef(() => PhotosModule)],
   controllers: [EmployeeController],
   providers: [EmployeeService],
   exports: [EmployeeService],
