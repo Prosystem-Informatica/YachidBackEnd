@@ -10,7 +10,6 @@ export class CreateUserDto {
     @IsNotEmpty()
     password: string;
 
-
     @IsEnum({ message: 'Defina o tipo de usuário' })
     role: UserRole;
 }
