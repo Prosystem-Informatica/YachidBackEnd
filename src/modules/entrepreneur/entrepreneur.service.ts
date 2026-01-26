@@ -10,36 +10,49 @@ import { UserRole } from '../user/entities/user.entity';
 
 @Injectable()
 export class EntrepreneurService {
+  constructor(
+    @InjectRepository(Entrepreneur, EDatabase.YACHID)
+    private readonly entrepreneurRepository: Repository<Entrepreneur>,
+    private readonly userService: UserService,
+  ) {}
 
-    constructor(
-        @InjectRepository(Entrepreneur, EDatabase.YACHID)
-        private readonly entrepreneurRepository: Repository<Entrepreneur>,
-        private readonly userService: UserService,
-    ) {}
+  async findOneByUser(id: string) {
+    return await this.entrepreneurRepository.findOne({
+      where: { user: { id: id } },
+      relations: {
+        enterprises: true,
+      },
+    });
+  }
 
-    async findOneByUser(id: string) {
-        return await this.entrepreneurRepository.findOne({ where: { user: { id: id } } });
+  async createEntrepreneur(
+    createUserDto: CreateUserDto,
+    createEntrepreneurDto: CreateEntrepreneurDto,
+  ) {
+    try {
+      const user = await this.userService.createUser({
+        ...createUserDto,
+        role: UserRole.ENTREPRENEUR,
+      });
+
+      if (!user) {
+        throw new BadRequestException('Error creating user');
+      }
+
+      const entrepreneur = this.entrepreneurRepository.create({
+        ...createEntrepreneurDto,
+        user: { id: user.id },
+      });
+
+      if (!entrepreneur) {
+        throw new BadRequestException('Error creating entrepreneur');
+      }
+
+      return await this.entrepreneurRepository.save(entrepreneur);
+    } catch (error) {
+      throw new BadRequestException(
+        error.message ?? 'Error creating entrepreneur',
+      );
     }
-
-    async createEntrepreneur(createUserDto: CreateUserDto, createEntrepreneurDto: CreateEntrepreneurDto) {
-        try {
-            const user = await this.userService.createUser({...createUserDto, role: UserRole.ENTREPRENEUR});
-
-            if(!user) {
-                throw new BadRequestException('Error creating user');
-            }
-
-            const entrepreneur = this.entrepreneurRepository.create({...createEntrepreneurDto, user: { id: user.id }});
-            
-            if(!entrepreneur) {
-                throw new BadRequestException('Error creating entrepreneur');
-            }
-
-            return await this.entrepreneurRepository.save(entrepreneur);
-        }catch(error) {
-            throw new BadRequestException(error.message ?? 'Error creating entrepreneur');
-        }
-    }
-
-    
+  }
 }
