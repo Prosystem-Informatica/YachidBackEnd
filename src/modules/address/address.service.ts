@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateAddressDto } from './dto/address.dto';
 import { Address } from './entities/address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,9 +13,25 @@ export class AddressService {
         private addressRepository: Repository<Address>,
     ) {}
 
+    private readonly logger = new Logger(AddressService.name);
 
-    async create(createAddressDto: CreateAddressDto): Promise<Address> {
-        const address = this.addressRepository.create(createAddressDto);
-        return this.addressRepository.save(address);
+
+    async create(createAddressDto: CreateAddressDto, branchId: string): Promise<Address> {
+        try{
+            this.logger.log(`Creating address for branch ${branchId}`);
+     
+            const address = this.addressRepository.save({...createAddressDto, branch: { id: branchId }});
+
+            if(!address) {
+                throw new BadRequestException('Address not created');
+            }
+
+            this.logger.log(`Address created successfully`);
+
+            return address;
+
+        }catch(error) {
+            throw new BadRequestException(error.message);
+        }
     }
 }

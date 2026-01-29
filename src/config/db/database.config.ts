@@ -9,6 +9,8 @@ import { RevenueTaxDetails } from "src/modules/revenue-tax-details/entities/reve
 import { Photo } from "src/modules/photos/entities/photo.entity";
 import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.entity";
 import { User } from "src/modules/user/entities/user.entity";
+import { TaxRegime } from "src/modules/tax-regime/entities/tax-regime.entity";
+import { Branch } from "src/modules/branch/entities/branch.entity";
 
 export enum EDatabase {
   YACHID = 'yachid',
@@ -26,7 +28,7 @@ export const dbYachidConfig = registerAs('databaseYachid', () => ({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'yachid',
   port: parseInt(process.env.DB_PORT || '5432', 10),
-  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User],
+  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch],
   logging: false,
   synchronize: true,
 }));

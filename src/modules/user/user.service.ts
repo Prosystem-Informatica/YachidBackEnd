@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { User, UserRole } from './entities/user.entity';
 import { EDatabase } from 'src/config/db/database.config';
 import { Repository } from 'typeorm';
@@ -13,19 +13,21 @@ export class UserService {
         private readonly userRepository: Repository<User>,
     ) {}
 
+    private readonly Logger = new Logger(UserService.name);
+
 
     async findOneByEmail(email: string) {
         return await this.userRepository.findOne({ where: { email } });
     }
 
 
-    async createUser(createUserDto: CreateUserDto) {
+    async createUser(createUserDto: CreateUserDto, role: UserRole) {
         try {
 
-        const user = this.userRepository.create({...createUserDto, role: UserRole.EMPLOYEE}) ;
-        return await this.userRepository.save(user);
+            return await this.userRepository.save({...createUserDto, role});
         
         }catch(error) {
+            this.Logger.error(`Error creating user: ${error.message}`);
             throw new BadRequestException(error.message ?? 'Error creating user');
         }
     }

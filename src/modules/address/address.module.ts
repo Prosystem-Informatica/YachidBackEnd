@@ -6,7 +6,7 @@ import { EDatabase } from 'src/config/db/database.config';
 import { EnterpriseModule } from '../enterprise/enterprise.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Address], EDatabase.YACHID), forwardRef(() => EnterpriseModule)],
+  imports: [TypeOrmModule.forFeature([Address], EDatabase.YACHID)],
   providers: [AddressService],
   exports: [AddressService]
 })

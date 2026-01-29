@@ -30,10 +30,10 @@ export class EntrepreneurService {
     createEntrepreneurDto: CreateEntrepreneurDto,
   ) {
     try {
-      const user = await this.userService.createUser({
-        ...createUserDto,
-        role: UserRole.ENTREPRENEUR,
-      });
+      const user = await this.userService.createUser(
+        createUserDto,
+         UserRole.ENTREPRENEUR,
+      );
 
       if (!user) {
         throw new BadRequestException('Error creating user');

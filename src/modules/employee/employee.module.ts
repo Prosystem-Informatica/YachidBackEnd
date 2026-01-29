@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EDatabase } from '../../config/db/database.config';
 import { UserModule } from '../user/user.module';
 import { PhotosModule } from '../photos/photos.module';
+import { BranchModule } from '../branch/branch.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => AuthModule), forwardRef(() => UserModule), forwardRef(() => PhotosModule)],
+  imports: [TypeOrmModule.forFeature([Employee], EDatabase.YACHID), forwardRef(() => UserModule), forwardRef(() => PhotosModule), forwardRef(() => BranchModule)],
   controllers: [EmployeeController],
   providers: [EmployeeService],
   exports: [EmployeeService],

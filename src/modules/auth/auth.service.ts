@@ -1,30 +1,28 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login.dto';
-import * as bcryptjs from 'bcryptjs';
 import { Employee } from '../employee/entities/employee.entity';
-import { EmployeeService } from '../employee/employee.service';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidV4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../user/user.service';
 import { User, UserRole } from '../user/entities/user.entity';
 import { Entrepreneur } from '../entrepreneur/entities/entrepreneur.entity';
+import { Logger } from '@nestjs/common';
+import { EmployeeService } from '../employee/employee.service';
 import { EntrepreneurService } from '../entrepreneur/entrepreneur.service';
-import { CreateUserDto } from '../user/dto/createUser.dto';
-import { CreateEntrepreneurDto } from '../entrepreneur/dto/createEntrepreneur.dto';
-import { CreateEmployeeDto } from '../employee/dto/create-employee.dto';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private readonly employeeService: EmployeeService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly userService: UserService,
+        private readonly employeeService: EmployeeService,
         private readonly entrepreneurService: EntrepreneurService,
     ) {}
+
+    private readonly Logger = new Logger(AuthService.name);
 
 
     async findOneByUser(email: string) {
@@ -32,6 +30,8 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto) {
+        try {
+                this.Logger.log(`Logging in user ${loginDto.email}`)
         const { email, password } = loginDto;
 
         const user = await this.userService.findOneByEmail(email);
@@ -39,6 +39,7 @@ export class AuthService {
         if (!user || !user.password) {
             throw new UnauthorizedException('Email ou senha inválidos');
         }
+
         //TODO: Implementar a comparação de senha com o bcrypt
         // if(!bcryptjs.compareSync(password, user.password)) {
         //     throw new UnauthorizedException('Email ou senha inválidos');
@@ -58,7 +59,7 @@ export class AuthService {
           throw new UnauthorizedException('Email ou senha inválidos');
         }
 
-        const token = await this.generateEmployeeTokens(user, userEntity);
+        const token = await this.generateUserToken(user, userEntity);
 
         return {
             token,
@@ -68,9 +69,13 @@ export class AuthService {
               ...userEntity,
             }
         };
+        } catch (error) {
+          this.Logger.error(`Error logging in: ${error.message}`);
+          throw new BadRequestException(error.message);
+        }
     }
 
-    async generateEmployeeTokens(user: User, userEntity: Entrepreneur | Employee): Promise<string> {
+    async generateUserToken(user: User, userEntity: Entrepreneur | Employee): Promise<string> {
         const authSign = {
           name: userEntity.name,
           email: user.email,
@@ -90,21 +95,4 @@ export class AuthService {
         
       }
 
-    async registerEmployee(createUserDto: CreateUserDto, createEmployeeDto: CreateEmployeeDto) {
-        try {
-          const user = await this.userService.createUser(createUserDto);
-
-          if(!user) {
-            throw new BadRequestException('Error creating user');
-          }
-
-          const employee = await this.employeeService.registerEmployee(createEmployeeDto, user.id);
-
-          if(!employee) {
-            throw new BadRequestException('Error creating employee');
-          }
-        }catch(error) {
-          throw new BadRequestException(error.message ?? 'Error registering employee');
-        }
-    }
 }

@@ -1,25 +1,27 @@
 import { IsEnum } from "class-validator";
+import { BaseEntity } from "src/config/db/base.entity";
 import { Address } from "src/modules/address/entities/address.entity";
+import { Branch } from "src/modules/branch/entities/branch.entity";
 import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.entity";
 import { Photo } from "src/modules/photos/entities/photo.entity";
 import {
     Entity,
-    PrimaryGeneratedColumn,
     Column,
     OneToOne,
     JoinColumn,
     ManyToOne,
+    OneToMany,
   } from "typeorm";
 
   export enum EnterpriseStatus {
     ACTIVE = 'ACTIVE',
     INACTIVE = 'INACTIVE'
   }
+
+
   
   @Entity("enterprises")
-  export class Enterprise {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string;
+  export class Enterprise extends BaseEntity{
   
     @Column({ nullable: false})
     document!: string;
@@ -45,11 +47,11 @@ import {
     @Column({nullable: true})
     accounting_email!: string;
 
-    @OneToOne(() => Address)
-    @JoinColumn({ name: 'address_id' })
-    address: Address;
-
     @ManyToOne(() => Entrepreneur)
     @JoinColumn({ name: "entrepreneur_id" })
     entrepreneur!: Entrepreneur;
+
+    @OneToMany(() => Branch, (branch) => branch.enterprise)
+    branches!: Branch[];
+
   }

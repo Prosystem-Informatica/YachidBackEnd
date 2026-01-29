@@ -9,7 +9,7 @@ import { EntrepreneurModule } from '../entrepreneur/entrepreneur.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [forwardRef(() => EmployeeModule), forwardRef(() => EntrepreneurModule), UserModule],
+  imports: [forwardRef(() => EmployeeModule), forwardRef(() => EntrepreneurModule), forwardRef(() => UserModule)],
   providers: [AuthService, JwtService],
   controllers: [AuthController],
   exports: [JwtService]

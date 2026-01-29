@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EmployeeModule } from './modules/employee/employee.module';
@@ -12,6 +12,8 @@ import { PhotosModule } from './modules/photos/photos.module';
 import { EnterpriseModule } from './modules/enterprise/enterprise.module';
 import { EntrepreneurModule } from './modules/entrepreneur/entrepreneur.module';
 import { UserModule } from './modules/user/user.module';
+import { TaxRegimeModule } from './modules/tax-regime/tax-regime.module';
+import { BranchModule } from './modules/branch/branch.module';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { UserModule } from './modules/user/user.module';
       load: [dbYachidConfig],
     }),
     ...DatabaseConfigModule,
-    EmployeeModule,
+ 
     AuthModule,
     AddressModule,
     AccountingModule,
@@ -29,6 +31,9 @@ import { UserModule } from './modules/user/user.module';
     PhotosModule,
     EntrepreneurModule,
     UserModule,
+    TaxRegimeModule,
+    forwardRef(() => BranchModule),
+    forwardRef(() => EmployeeModule),
   ],
   controllers: [AppController],
   providers: [AppService],

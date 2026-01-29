@@ -1,43 +1,40 @@
+import { BaseEntity } from 'src/config/db/base.entity';
+import { Branch } from 'src/modules/branch/entities/branch.entity';
 import { Enterprise } from 'src/modules/enterprise/entities/enterprise.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 
 @Entity('revenue_tax_details')
-export class RevenueTaxDetails {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+export class RevenueTaxDetails extends BaseEntity{
 
     @Column()
-    regime_tributario_issqn?: string;
+    bc_irpj: string;
 
     @Column()
-    ind_ret_issqn?: string;
+    bc_csll: string;
 
     @Column()
-    receita_bruta_12m?: number;
+    aliquota_irpj: string;
 
     @Column()
-    aliquota?: number;
+    aliquota_csll: string;
 
     @Column()
-    pis?: number;
+    ibs_uf: number;
 
     @Column()
-    cofins?: number;
+    ibs_mun: number;
 
     @Column()
-    icms?: number;
+    cbs: number;
 
     @Column()
-    ibc_uf?: number;
+    over: string;
 
     @Column()
-    ibs_mun?: number;
+    value_over: string;
 
-    @Column()
-    cbs?: number;
-
-    // @OneToOne(() => Enterprise, (enterprise) => enterprise.revenueTaxDetails)
-    // @JoinColumn({ name: 'enterprise_id' })
-    // enterprise: Enterprise;
+    @OneToOne(() => Branch)
+    @JoinColumn({ name: 'branch_id' })
+    branch: Branch;
 
 }

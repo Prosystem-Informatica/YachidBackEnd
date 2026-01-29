@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { EntrepreneurService } from './entrepreneur.service';
 import { CreateUserDto } from '../user/dto/createUser.dto';
 import { CreateEntrepreneurDto } from './dto/createEntrepreneur.dto';
@@ -10,6 +10,7 @@ export class EntrepreneurController {
 
 
     @Post('register')
+    @HttpCode(201)
     register(@Body() user: CreateUserDto, @Body() entrepreneur: CreateEntrepreneurDto) {
         return this.entrepreneurService.createEntrepreneur(user, entrepreneur);
     }

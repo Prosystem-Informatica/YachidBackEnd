@@ -1,4 +1,5 @@
 
+import { Branch } from 'src/modules/branch/entities/branch.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 
 @Entity('address')
@@ -35,6 +36,10 @@ export class Address {
 
     @Column({nullable: false})
     uf: string;
+
+    @OneToOne(() => Branch)
+    @JoinColumn({ name: 'branch_id' })
+    branch: Branch;
 
 }
 
