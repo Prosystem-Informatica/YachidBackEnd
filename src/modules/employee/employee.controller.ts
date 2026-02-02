@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, Logger, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Logger, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { CreateUserDto } from '../user/dto/createUser.dto';
@@ -6,6 +6,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from '../photos/photos.service';
 import { Employee } from './entities/employee.entity';
 import { ListEmployeesDto } from './dto/list-employees.dto';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('employee')
 export class EmployeeController {
@@ -15,8 +16,8 @@ export class EmployeeController {
         private readonly photosService: PhotosService,
     ) {}
 
-    private readonly Logger = new Logger(EmployeeController.name);
 
+    @UseGuards(AuthGuard)
     @Post('/:branchId/create')
     @HttpCode(204)
     async createEmployee( @Body() createEmployeeDto: CreateEmployeeDto, @Body() createUserDto: CreateUserDto, @Param('branchId') branchId: string) {
@@ -35,6 +36,7 @@ export class EmployeeController {
         }
     }
 
+    @UseGuards(AuthGuard)
     @Get('/employees')
     @HttpCode(200)
     async getEmployees(@Query() listEmployeesDto: ListEmployeesDto): Promise<Employee[]> {
