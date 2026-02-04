@@ -23,7 +23,7 @@ import {
   @Entity("enterprises")
   export class Enterprise extends BaseEntity{
   
-    @Column({ nullable: false})
+    @Column({ nullable: false, unique: true, length: 14})
     document!: string;
 
     @Column({nullable: false})

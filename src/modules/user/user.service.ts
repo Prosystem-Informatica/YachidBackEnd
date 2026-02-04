@@ -23,7 +23,7 @@ export class UserService {
 
     async createUser(createUserDto: CreateUserDto, role: UserRole) {
         try {
-
+            console.log(createUserDto);
             return await this.userRepository.save({...createUserDto, role});
         
         }catch(error) {

@@ -7,6 +7,7 @@ import { EDatabase } from 'src/config/db/database.config';
 @Module({
   imports: [TypeOrmModule.forFeature([RevenueTaxDetails], EDatabase.YACHID)],
   providers: [RevenueTaxDetailsService],
+  exports: [RevenueTaxDetailsService],
  
 })
 export class RevenueTaxDetailsModule {}

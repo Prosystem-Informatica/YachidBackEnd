@@ -6,6 +6,10 @@ import { EDatabase } from 'src/config/db/database.config';
 import { CreateEnterpriseDto } from './dto/enterprise.dto';
 import { AddressService } from '../address/address.service';
 import { BranchService } from '../branch/branch.service';
+import { RevenueTaxDetailsService } from '../revenue-tax-details/revenue-tax-details.service';
+import { TaxRegimeService } from '../tax-regime/tax-regime.service';
+import { EnterpriseRegime } from '../tax-regime/dto/tax-regime.dto';
+
 
 @Injectable()
 export class EnterpriseService {
@@ -13,7 +17,9 @@ export class EnterpriseService {
     @InjectRepository(Enterprise, EDatabase.YACHID) 
     private readonly enterpriseRepository: Repository<Enterprise>,
     private readonly addressService: AddressService,
-    private readonly branchService: BranchService
+    private readonly branchService: BranchService,
+    private readonly revenueTaxDetailsService: RevenueTaxDetailsService,
+    private readonly taxRegimeService: TaxRegimeService
 ) {
     }
 
@@ -24,11 +30,13 @@ export class EnterpriseService {
 
             this.Logger.log(`Creating enterprise for entrepreneur ${entrepreneurId}`);
 
-            const enterprise = await this.enterpriseRepository.save({...createEnterpriseDto, entrepreneur: { id: entrepreneurId }});
+            const enterprise = this.enterpriseRepository.create({...createEnterpriseDto, entrepreneur: { id: entrepreneurId }});
 
             if(!enterprise) {
                 throw new BadRequestException('Enterprise not created');
             }
+
+            await this.enterpriseRepository.save(enterprise);
 
             this.Logger.log(`Enterprise created: ${enterprise}`);
 
@@ -46,12 +54,28 @@ export class EnterpriseService {
                 throw new BadRequestException('Address not created');
             }
 
-            this.Logger.log(`Enterprise created with branch and address successfully: ${enterprise}`);
+            const taxRegime = await this.taxRegimeService.setTaxRegime(createEnterpriseDto.tax_regime, branch.id);
 
+            if(!taxRegime) {
+                throw new BadRequestException('Tax regime not created');
+            }
+ 
+            const revenueTaxDetails = await this.revenueTaxDetailsService.setRevenueTaxDetails(createEnterpriseDto.revenueTaxDetails, branch.id, taxRegime.tax_regime);
 
+            if(!revenueTaxDetails) {
+                throw new BadRequestException('Revenue tax details not created');
+            }
+
+            this.Logger.log(`Enterprise created with branch and address successfully: ${enterprise.fantasy_name}`);
+  
         } catch (e) {
+            
+            if(e.detail && e.detail.includes('already exists')) {
+                this.Logger.error(`Error creating enterprise: ${e.message}`);
+                throw new BadRequestException('Enterprise already exists');
+            }
             this.Logger.error(`Error creating enterprise: ${e.message}`);
-            throw new BadRequestException(e.message);
+            throw e;
         }
     }
 
@@ -64,6 +88,18 @@ export class EnterpriseService {
             });
         } catch (e) {
             this.Logger.error(`Error getting enterprises by entrepreneur: ${e.message}`);
+            throw new BadRequestException(e.message);
+        }
+    }
+
+    async getEnterpriseDetail(enterpriseId: string): Promise<any> {
+        try {
+            return this.enterpriseRepository.find({ 
+                where: { id: enterpriseId },
+                relations: ['branches', 'branches.address', 'branches.revenueTaxDetails', 'branches.taxRegime'],
+            });
+        } catch (e) {
+            this.Logger.error(`Error getting enterprise detail: ${e.message}`);
             throw new BadRequestException(e.message);
         }
     }

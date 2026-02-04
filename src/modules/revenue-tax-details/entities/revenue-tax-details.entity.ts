@@ -6,32 +6,44 @@ import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 @Entity('revenue_tax_details')
 export class RevenueTaxDetails extends BaseEntity{
 
-    @Column()
-    bc_irpj: string;
+    @Column({ nullable: true })
+    bc_irpj: string ;
 
-    @Column()
-    bc_csll: string;
+    @Column({ nullable: true })
+    bc_csll: string ;
 
-    @Column()
-    aliquota_irpj: string;
+    @Column({ nullable: true })
+    aliquota_irpj: string ;
 
-    @Column()
-    aliquota_csll: string;
+    @Column({ nullable: true })
+    aliquota_csll: string ;
 
-    @Column()
-    ibs_uf: number;
+    @Column({ nullable: true })
+    ibs_uf: string ;
 
-    @Column()
-    ibs_mun: number;
+    @Column({ nullable: true })
+    ibs_mun: string ;
 
-    @Column()
-    cbs: number;
+    @Column({ nullable: true })
+    cbs: string ;
 
-    @Column()
-    over: string;
+    @Column({ nullable: true })
+    over: string ;
 
-    @Column()
-    value_over: string;
+    @Column({ nullable: true })
+    value_over: string ;
+
+    @Column({ nullable: true })
+    aliquota: string ;
+
+    @Column({ nullable: true })
+    cofins: string ;
+
+    @Column({ nullable: true })
+    pis: string ;
+
+    @Column({ nullable: true })
+    icms: string ;
 
     @OneToOne(() => Branch)
     @JoinColumn({ name: 'branch_id' })

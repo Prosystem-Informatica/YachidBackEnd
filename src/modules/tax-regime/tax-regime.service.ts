@@ -14,19 +14,19 @@ export class TaxRegimeService {
     ) {}
 
 
-    async create(taxRegimeDto: TaxRegimeDto, enterpriseId: string) : Promise<TaxRegime> {
+    async setTaxRegime(taxRegimeDto: TaxRegimeDto, branchId: string) : Promise<TaxRegime> {
        try {
 
-        const taxRegime = await this.taxRegimeRepository.save({
+        const taxRegime =  this.taxRegimeRepository.create({
             ...taxRegimeDto,
-            enterprise: { id: enterpriseId }
+            branch: { id: branchId }
         });
 
         if(!taxRegime) {
             throw new BadRequestException('Tax regime not created');
         }
 
-        return taxRegime;
+        return await this.taxRegimeRepository.save(taxRegime);
 
        }catch(error) {
         throw new BadRequestException(error.message);

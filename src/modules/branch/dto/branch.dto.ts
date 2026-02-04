@@ -1,4 +1,5 @@
-import {  IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import {  IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import { CreateAddressDto } from "src/modules/address/dto/address.dto";
 import { BaseEntity } from "typeorm";
 
@@ -11,6 +12,8 @@ export class CreateBranchDto {
 
     @IsOptional()
     @IsObject()
+    @ValidateNested()
+    @Type(() => CreateAddressDto)
     address?: CreateAddressDto;
 
 
