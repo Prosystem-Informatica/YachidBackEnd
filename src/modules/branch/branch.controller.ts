@@ -17,22 +17,20 @@ export class BranchController {
     @HttpCode(204)
     async createBranch(@Body() createBranchDto: CreateBranchDto,  @Param('enterpriseId') enterpriseId: string) : Promise<void> {
         try {
-            const branch = await this.branchService.createBranch(createBranchDto, enterpriseId);
-            if(!branch) {
-                throw new BadRequestException('Branch not created');
-            }
-
             if(!createBranchDto.address) {
                 throw new BadRequestException('Address is required');
             }
-            
-            const address = await this.addressService.create(createBranchDto.address, branch.id);
+
+            const address = await this.addressService.create(createBranchDto.address);
 
             if(!address) {
                 throw new BadRequestException('Address not created');
             }
-            
-       
+
+            const branch = await this.branchService.createBranch(createBranchDto, enterpriseId, address.id);
+            if(!branch) {
+                throw new BadRequestException('Branch not created');
+            }
 
         }catch(error) {
             throw new BadRequestException(error.message);

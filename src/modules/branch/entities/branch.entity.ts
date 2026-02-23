@@ -18,6 +18,7 @@ export class Branch extends BaseEntity {
     enterprise!: Enterprise;
 
     @OneToOne(() => Address, (address) => address.branch, { eager: true })
+    @JoinColumn({ name: 'address_id' })
     address!: Address;
 
     @OneToMany(() => Employee, (employee) => employee.branch)
@@ -28,4 +29,5 @@ export class Branch extends BaseEntity {
 
     @OneToOne(() => TaxRegime, (taxRegime) => taxRegime.branch)
     taxRegime!: TaxRegime;
+
 }

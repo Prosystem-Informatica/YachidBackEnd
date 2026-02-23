@@ -15,12 +15,12 @@ export class BranchService {
     }
     private readonly logger = new Logger(BranchService.name);
 
-    async createBranch(createBranchDto: CreateBranchDto, enterpriseId: string): Promise<Branch> {
+    async createBranch(createBranchDto: CreateBranchDto, enterpriseId: string, addressId: string): Promise<Branch> {
         try {
 
             this.logger.log(`Creating branch for enterprise ${enterpriseId}`);
 
-            const branch = await this.branchRepository.save({...createBranchDto, enterprise: { id: enterpriseId }});
+            const branch = await this.branchRepository.save({...createBranchDto, enterprise: { id: enterpriseId }, address: { id: addressId }});
 
             if(!branch) {
                 throw new BadRequestException('Branch not created');
@@ -40,6 +40,16 @@ export class BranchService {
             return this.branchRepository.find({ where: { enterprise: { id: enterpriseId } } });
         } catch (error) {
             this.logger.error(`Error getting branches by enterprise: ${error.message}`);
+            throw new BadRequestException(error.message);
+        }
+    }
+
+
+    async getBranchById(branchId: string): Promise<Branch> {
+        try {
+            return this.branchRepository.findOneOrFail({ where: { id: branchId } });
+        } catch (error) {
+            this.logger.error(`Error getting branch by id: ${error.message}`);
             throw new BadRequestException(error.message);
         }
     }

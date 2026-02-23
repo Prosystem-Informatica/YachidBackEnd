@@ -11,6 +11,21 @@ import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.ent
 import { User } from "src/modules/user/entities/user.entity";
 import { TaxRegime } from "src/modules/tax-regime/entities/tax-regime.entity";
 import { Branch } from "src/modules/branch/entities/branch.entity";
+import { Partner } from "src/modules/partner/entity/partner.entity";
+import { PaymentAddress } from "src/modules/payment-address/entities/payment-address.entity";
+import { Carrier } from "src/modules/carrier/entities/carrier.entity";
+import { CarrierPartner } from "src/modules/carrier-partner/entities/carrier-partner.entity";
+import { PartnerCreditConfig } from "src/modules/partner-credit-config/entities/partner-credit-config.entity";
+import { DeliveryAddress } from "src/modules/delivery-address/entities/delivery-address.entity";
+import { AccountsPayable } from "src/modules/accounts-payable/entities/accounts-payable.entity";
+import { AccountsReceivable } from "src/modules/accounts-receivable/entities/accounts-receivable";
+import { Product } from "src/modules/product/entities/product.entity";
+import { ProductComponent } from "src/modules/product/entities/product-component.entity";
+import { ProductStock } from "src/modules/product/entities/product-stock.entity";
+import { ProductStockAddress } from "src/modules/product/entities/product-stock-address.entity";
+import { Representative } from "src/modules/representative/entities/representative.entity";
+import { Bank } from "src/modules/bank/entities/bank.entity";
+
 
 export enum EDatabase {
   YACHID = 'yachid',
@@ -28,7 +43,7 @@ export const dbYachidConfig = registerAs('databaseYachid', () => ({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'yachid',
   port: parseInt(process.env.DB_PORT || '5432', 10),
-  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch],
+  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch, Partner, PaymentAddress, Carrier, CarrierPartner, PartnerCreditConfig, DeliveryAddress, AccountsPayable, AccountsReceivable, Product, ProductComponent, ProductStock, ProductStockAddress, Representative, Bank],
   logging: false,
   synchronize: true,
 }));

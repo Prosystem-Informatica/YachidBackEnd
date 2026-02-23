@@ -40,19 +40,19 @@ export class EnterpriseService {
 
             this.Logger.log(`Enterprise created: ${enterprise}`);
 
-            const branch = await this.branchService.createBranch({name: createEnterpriseDto.fantasy_name + ` - SEDE`}, enterprise.id);
+            const address = await this.addressService.create(createEnterpriseDto.address);
+
+            if(!address) {
+                throw new BadRequestException('Address not created');
+            }
+
+            const branch = await this.branchService.createBranch({name: createEnterpriseDto.fantasy_name + ` - SEDE`}, enterprise.id, address.id);
 
             if(!branch) {
                 throw new BadRequestException('Branch not created');
             }
 
             this.Logger.log(`Branch created: ${branch}`);
-
-            const address = await this.addressService.create(createEnterpriseDto.address, branch.id);
-
-            if(!address) {
-                throw new BadRequestException('Address not created');
-            }
 
             const taxRegime = await this.taxRegimeService.setTaxRegime(createEnterpriseDto.tax_regime, branch.id);
 

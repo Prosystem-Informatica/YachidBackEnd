@@ -6,7 +6,7 @@ import { Request } from 'express';
 
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AppGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
  
   async canActivate(

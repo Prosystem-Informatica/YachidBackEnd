@@ -16,11 +16,11 @@ export class AddressService {
     private readonly logger = new Logger(AddressService.name);
 
 
-    async create(createAddressDto: CreateAddressDto, branchId: string): Promise<Address> {
+    async create(createAddressDto: CreateAddressDto): Promise<Address> {
         try{
-            this.logger.log(`Creating address for branch ${branchId}`);
+            this.logger.log(`Creating address`);
      
-            const address = this.addressRepository.save({...createAddressDto, branch: { id: branchId }});
+            const address = await this.addressRepository.save(createAddressDto);
 
             if(!address) {
                 throw new BadRequestException('Address not created');

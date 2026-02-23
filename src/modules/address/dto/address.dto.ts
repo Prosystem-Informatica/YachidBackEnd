@@ -26,9 +26,6 @@ export class CreateAddressDto{
     country: string;
 
     @IsNotEmpty()
-    state: string;
-
-    @IsNotEmpty()
     uf: string;
 
 }

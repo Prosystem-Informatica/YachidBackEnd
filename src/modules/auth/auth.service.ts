@@ -46,7 +46,7 @@ export class AuthService {
         // }
 
         let userEntity: Entrepreneur | Employee | null = null;
-
+        
         if(user.role === UserRole.EMPLOYEE) {
           userEntity = await this.employeeService.findOneByUserId(user.id);
         }
@@ -82,10 +82,16 @@ export class AuthService {
           id: userEntity.id,
           sessionId: uuidV4(),
           levelAccess: user.role,
+          role: user.role,
+          branchId: null as string | null,
         };
+
+        if(user.role === UserRole.EMPLOYEE) {
+          authSign.branchId = (userEntity as Employee).branch.id;
+        }
     
         const TWO_HOUR_IN_SECOUNDS = 60 * 60 * 24;
-    
+
         const accessToken = this.jwtService.sign(authSign, {
           secret: this.configService.get('JWT_SECRET'),
           expiresIn: TWO_HOUR_IN_SECOUNDS,

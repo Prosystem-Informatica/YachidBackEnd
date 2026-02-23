@@ -14,6 +14,18 @@ import { EntrepreneurModule } from './modules/entrepreneur/entrepreneur.module';
 import { UserModule } from './modules/user/user.module';
 import { TaxRegimeModule } from './modules/tax-regime/tax-regime.module';
 import { BranchModule } from './modules/branch/branch.module';
+import { PartnerModule } from './modules/partner/partner.module';
+import { PaymentAddressModule } from './modules/payment-address/payment-address.module';
+import { CarrierModule } from './modules/carrier/carrier.module';
+import { CarrierPartnerModule } from './modules/carrier-partner/carrier-partner.module';
+import { PartnerCreditConfigModule } from './modules/partner-credit-config/partner-credit-config.module';
+import { DeliveryAddressModule } from './modules/delivery-address/delivery-address.module';
+import { AccountsPayableModule } from './modules/accounts-payable/accounts-payable.module';
+import { AccountsReceivableModule } from './modules/accounts-receivable/accounts-receivable.module';
+import { ProductModule } from './modules/product/product.module';
+import { RepresentativeModule } from './modules/representative/representative.module';
+import { BankModule } from './modules/bank/bank.module';
+
 
 @Module({
   imports: [
@@ -34,6 +46,17 @@ import { BranchModule } from './modules/branch/branch.module';
     TaxRegimeModule,
     forwardRef(() => BranchModule),
     forwardRef(() => EmployeeModule),
+    PartnerModule,
+    PaymentAddressModule,
+    CarrierModule,
+    CarrierPartnerModule,
+    PartnerCreditConfigModule,
+    AccountsPayableModule,
+    DeliveryAddressModule,
+    AccountsReceivableModule,
+    ProductModule,
+    RepresentativeModule,
+    BankModule,
   ],
   controllers: [AppController],
   providers: [AppService],

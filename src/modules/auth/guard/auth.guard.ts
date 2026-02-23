@@ -1,6 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 
 import { Request } from 'express';
 
@@ -13,24 +12,26 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): Promise<boolean> {
    try {
-   const request = context.switchToHttp().getRequest();
-   const token = this.extractTokenFromHeader(request);
 
    if(process.env.ENV === 'development') {
     return true;
    }
 
+   const request = context.switchToHttp().getRequest();
+
+   const token = this.extractTokenFromHeader(request);
+   
    if (!token ) {
     throw new UnauthorizedException('Token não encontrado');
    }
-
+   
     const payload = await this.jwtService.verifyAsync(token);
     request['user'] = payload;
 
    } catch (error) {
+    console.log('error', error);
     throw new UnauthorizedException( error.message || 'Falha ao verificar o token');
    }
-
    return true;
   }
 
