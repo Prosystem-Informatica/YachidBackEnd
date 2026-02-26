@@ -25,6 +25,8 @@ import { AccountsReceivableModule } from './modules/accounts-receivable/accounts
 import { ProductModule } from './modules/product/product.module';
 import { RepresentativeModule } from './modules/representative/representative.module';
 import { BankModule } from './modules/bank/bank.module';
+import { PasswordResetModule } from './modules/password-reset/password-reset.module';
+import { MailModule } from './modules/mail/mail.module';
 
 
 @Module({
@@ -57,6 +59,8 @@ import { BankModule } from './modules/bank/bank.module';
     ProductModule,
     RepresentativeModule,
     BankModule,
+    PasswordResetModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

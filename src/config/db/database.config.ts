@@ -25,6 +25,7 @@ import { ProductStock } from "src/modules/product/entities/product-stock.entity"
 import { ProductStockAddress } from "src/modules/product/entities/product-stock-address.entity";
 import { Representative } from "src/modules/representative/entities/representative.entity";
 import { Bank } from "src/modules/bank/entities/bank.entity";
+import { PasswordReset } from "src/modules/password-reset/entities/password-reset.entity";
 
 
 export enum EDatabase {
@@ -43,7 +44,7 @@ export const dbYachidConfig = registerAs('databaseYachid', () => ({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'yachid',
   port: parseInt(process.env.DB_PORT || '5432', 10),
-  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch, Partner, PaymentAddress, Carrier, CarrierPartner, PartnerCreditConfig, DeliveryAddress, AccountsPayable, AccountsReceivable, Product, ProductComponent, ProductStock, ProductStockAddress, Representative, Bank],
+  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch, Partner, PaymentAddress, Carrier, CarrierPartner, PartnerCreditConfig, DeliveryAddress, AccountsPayable, AccountsReceivable, Product, ProductComponent, ProductStock, ProductStockAddress, Representative, Bank, PasswordReset],
   logging: false,
   synchronize: true,
 }));

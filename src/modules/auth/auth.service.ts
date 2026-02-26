@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Employee } from '../employee/entities/employee.entity';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidV4 } from 'uuid';
@@ -10,6 +12,8 @@ import { Entrepreneur } from '../entrepreneur/entities/entrepreneur.entity';
 import { Logger } from '@nestjs/common';
 import { EmployeeService } from '../employee/employee.service';
 import { EntrepreneurService } from '../entrepreneur/entrepreneur.service';
+import { PasswordResetService } from '../password-reset/password-reset.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +24,8 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly employeeService: EmployeeService,
         private readonly entrepreneurService: EntrepreneurService,
+        private readonly passwordResetService: PasswordResetService,
+        private readonly mailService: MailService,
     ) {}
 
     private readonly Logger = new Logger(AuthService.name);
@@ -100,5 +106,38 @@ export class AuthService {
         return accessToken
         
       }
+
+    async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+      const { email } = forgotPasswordDto;
+
+      const user = await this.userService.findOneByEmail(email);
+
+      // Por segurança, sempre retornamos sucesso para não revelar se o e-mail existe
+      if (user) {
+        const passwordReset = await this.passwordResetService.create(email);
+        await this.mailService.sendPasswordResetCode(email, passwordReset.code);
+        this.Logger.log(`Código de redefinição enviado para: ${email}`);
+      }
+
+      return {
+        message: 'Se o e-mail estiver cadastrado, você receberá o código para redefinir sua senha.',
+      };
+    }
+
+    async resetPassword(resetPasswordDto: ResetPasswordDto) {
+      const { email, code, newPassword } = resetPasswordDto;
+
+      const reset = await this.passwordResetService.findValid(email, code);
+      if (!reset) {
+        throw new BadRequestException('Código inválido ou expirado. Solicite um novo código.');
+      }
+
+      await this.userService.updatePassword(email, newPassword);
+      await this.passwordResetService.invalidate(email);
+
+      return {
+        message: 'Senha redefinida com sucesso.',
+      };
+    }
 
 }

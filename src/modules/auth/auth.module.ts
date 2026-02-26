@@ -6,6 +6,7 @@ import { forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { EntrepreneurModule } from '../entrepreneur/entrepreneur.module';
 import { UserModule } from '../user/user.module';
+import { PasswordResetModule } from '../password-reset/password-reset.module';
 import { ConfigService } from '@nestjs/config';
 
 
@@ -14,6 +15,7 @@ import { ConfigService } from '@nestjs/config';
     forwardRef(() => EmployeeModule), 
     forwardRef(() => EntrepreneurModule), 
     forwardRef(() => UserModule),
+    PasswordResetModule,
     JwtModule.registerAsync({
     global: true,
     useFactory: (configService: ConfigService) => ({
