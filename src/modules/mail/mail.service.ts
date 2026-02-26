@@ -11,8 +11,8 @@ export class MailService {
   private getTransporter() {
     const host = this.configService.get('SMTP_HOST', 'smtp.gmail.com');
     const port = this.configService.get('SMTP_PORT', '587');
-    const user = this.configService.get('SMTP_USER');
-    const pass = this.configService.get('SMTP_PASS');
+    const user = this.configService.get('SMTP_USER', 'giovanni@prosysteminformatica.com');
+    const pass = this.configService.get('SMTP_PASS', 'Vanniz@11');
 
     if (!user || !pass) {
       this.logger.warn('SMTP_USER ou SMTP_PASS não configurados. E-mails não serão enviados.');
