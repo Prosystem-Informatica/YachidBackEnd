@@ -1,8 +1,10 @@
 import { BaseEntity } from 'src/config/db/base.entity';
 import { TipoCusto } from 'src/core/enum/enums';
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
 import { ProductComponent } from './product-component.entity';
+import { ProductNotaFiscal } from './product-nota-fiscal.entity';
 import { ProductStock } from './product-stock.entity';
+import { Group } from 'src/modules/group/entities/group.entity';
 
 @Entity('products')
 export class Product extends BaseEntity {
@@ -110,4 +112,11 @@ export class Product extends BaseEntity {
 
   @OneToMany(() => ProductComponent, (component) => component.product)
   components: ProductComponent[];
+
+  @ManyToOne(() => Group)
+  @JoinColumn({ name: 'group_id' })
+  group!: Group;
+
+  @OneToOne(() => ProductNotaFiscal, (nf) => nf.product)
+  nota_fiscal: ProductNotaFiscal;
 }

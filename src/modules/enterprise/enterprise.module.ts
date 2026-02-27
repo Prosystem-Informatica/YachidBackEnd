@@ -8,6 +8,7 @@ import { EDatabase } from '../../config/db/database.config';
 import { BranchModule } from '../branch/branch.module';
 import { RevenueTaxDetailsModule } from '../revenue-tax-details/revenue-tax-details.module';
 import { TaxRegimeModule } from '../tax-regime/tax-regime.module';
+import { GroupModule } from '../group/group.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { TaxRegimeModule } from '../tax-regime/tax-regime.module';
     forwardRef(() => AddressModule),
     forwardRef(() => BranchModule),
     forwardRef(() => RevenueTaxDetailsModule),
-    forwardRef(() => TaxRegimeModule)
+    forwardRef(() => TaxRegimeModule),
+    forwardRef(() => GroupModule)
   ],
   controllers: [EnterpriseController],
   providers: [EnterpriseService]

@@ -9,6 +9,7 @@ import { BranchService } from '../branch/branch.service';
 import { RevenueTaxDetailsService } from '../revenue-tax-details/revenue-tax-details.service';
 import { TaxRegimeService } from '../tax-regime/tax-regime.service';
 import { EnterpriseRegime } from '../tax-regime/dto/tax-regime.dto';
+import { GroupService } from '../group/group.service';
 
 
 @Injectable()
@@ -19,7 +20,8 @@ export class EnterpriseService {
     private readonly addressService: AddressService,
     private readonly branchService: BranchService,
     private readonly revenueTaxDetailsService: RevenueTaxDetailsService,
-    private readonly taxRegimeService: TaxRegimeService
+    private readonly taxRegimeService: TaxRegimeService,
+    private readonly groupService: GroupService
 ) {
     }
 
@@ -29,6 +31,7 @@ export class EnterpriseService {
         try {
 
             this.Logger.log(`Creating enterprise for entrepreneur ${entrepreneurId}`);
+
 
             const enterprise = this.enterpriseRepository.create({...createEnterpriseDto, entrepreneur: { id: entrepreneurId }});
 
@@ -45,6 +48,8 @@ export class EnterpriseService {
             if(!address) {
                 throw new BadRequestException('Address not created');
             }
+
+
 
             const branch = await this.branchService.createBranch({name: createEnterpriseDto.fantasy_name + ` - SEDE`}, enterprise.id, address.id);
 
@@ -84,6 +89,7 @@ export class EnterpriseService {
         try {
             return this.enterpriseRepository.find({ 
                 where: { entrepreneur: { id: entrepreneurId } },
+                relations: ['group'],
                
             });
         } catch (e) {

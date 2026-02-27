@@ -7,12 +7,15 @@ import { Product } from './entities/product.entity';
 import { ProductComponent } from './entities/product-component.entity';
 import { ProductStock } from './entities/product-stock.entity';
 import { ProductStockAddress } from './entities/product-stock-address.entity';
+import { ProductNotaFiscal } from './entities/product-nota-fiscal.entity';
+import { ProductIvaItem } from './entities/product-iva-item.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CreateProductStockDto } from './dto/create-product-stock.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateProductStockDto } from './dto/update-product-stock.dto';
 import { CreateProductComponentDto } from './dto/create-product-component.dto';
 import { UpdateProductComponentDto } from './dto/update-product-component.dto';
+import { UpdateProductNotaFiscalDto } from './dto/update-product-nota-fiscal.dto';
 import { ListProductsDto } from './dto/list-products.dto';
 
 @Injectable()
@@ -28,6 +31,10 @@ export class ProductService {
     private readonly productStockAddressRepository: Repository<ProductStockAddress>,
     @InjectRepository(ProductComponent, EDatabase.YACHID)
     private readonly productComponentRepository: Repository<ProductComponent>,
+    @InjectRepository(ProductNotaFiscal, EDatabase.YACHID)
+    private readonly productNotaFiscalRepository: Repository<ProductNotaFiscal>,
+    @InjectRepository(ProductIvaItem, EDatabase.YACHID)
+    private readonly productIvaItemRepository: Repository<ProductIvaItem>,
   ) {}
 
   async findAll(listProductsDto: ListProductsDto): Promise<{
@@ -76,7 +83,13 @@ export class ProductService {
       this.logger.log(`Getting product details: ${uuid}`);
       const product = await this.productRepository.findOne({
         where: { id: productId },
-        relations: ['stocks', 'stocks.address', 'components'],
+        relations: [
+          'stocks',
+          'stocks.address',
+          'components',
+          'nota_fiscal',
+          'nota_fiscal.iva_tabela',
+        ],
       });
 
       if (!product) {
@@ -354,6 +367,103 @@ export class ProductService {
       );
       throw new BadRequestException(
         error.message ?? 'Error creating product component',
+      );
+    }
+  }
+
+  async updateNotaFiscal(
+    productId: string,
+    updateDto: UpdateProductNotaFiscalDto,
+  ): Promise<void> {
+    const uuid = uuidv4();
+    try {
+      this.logger.log(`Updating product nota fiscal: ${uuid}`);
+
+      await this.productRepository.findOneOrFail({
+        where: { id: productId },
+      });
+
+      let notaFiscal = await this.productNotaFiscalRepository.findOne({
+        where: { product: { id: productId } },
+        relations: ['iva_tabela'],
+      });
+
+      if (!notaFiscal) {
+        notaFiscal = this.productNotaFiscalRepository.create({
+          product: { id: productId },
+        });
+        notaFiscal = await this.productNotaFiscalRepository.save(notaFiscal);
+      }
+
+      const updateData: Partial<ProductNotaFiscal> = {};
+      if (updateDto.iva_estado !== undefined)
+        updateData.iva_estado = updateDto.iva_estado;
+      if (updateDto.iva_valor !== undefined)
+        updateData.iva_valor = updateDto.iva_valor;
+      if (updateDto.ncm !== undefined) updateData.ncm = updateDto.ncm;
+      if (updateDto.cest !== undefined) updateData.cest = updateDto.cest;
+      if (updateDto.reducao_perc !== undefined)
+        updateData.reducao_perc = updateDto.reducao_perc;
+      if (updateDto.origem_icms !== undefined)
+        updateData.origem_icms = updateDto.origem_icms;
+      if (updateDto.sit_tributaria_icms !== undefined)
+        updateData.sit_tributaria_icms = updateDto.sit_tributaria_icms;
+      if (updateDto.cst_ibs !== undefined)
+        updateData.cst_ibs = updateDto.cst_ibs;
+      if (updateDto.classificacao_tributaria_ibs !== undefined)
+        updateData.classificacao_tributaria_ibs =
+          updateDto.classificacao_tributaria_ibs;
+      if (updateDto.cst_cbs !== undefined)
+        updateData.cst_cbs = updateDto.cst_cbs;
+      if (updateDto.classificacao_tributaria_cbs !== undefined)
+        updateData.classificacao_tributaria_cbs =
+          updateDto.classificacao_tributaria_cbs;
+      if (updateDto.classe_enquadramento_ipi !== undefined)
+        updateData.classe_enquadramento_ipi =
+          updateDto.classe_enquadramento_ipi;
+      if (updateDto.codigo_enquadramento_ipi !== undefined)
+        updateData.codigo_enquadramento_ipi =
+          updateDto.codigo_enquadramento_ipi;
+      if (updateDto.aliquota_ipi !== undefined)
+        updateData.aliquota_ipi = updateDto.aliquota_ipi;
+      if (updateDto.sit_tributaria_ipi !== undefined)
+        updateData.sit_tributaria_ipi = updateDto.sit_tributaria_ipi;
+      if (updateDto.sit_tributaria_pis !== undefined)
+        updateData.sit_tributaria_pis = updateDto.sit_tributaria_pis;
+      if (updateDto.aliquota_pis !== undefined)
+        updateData.aliquota_pis = updateDto.aliquota_pis;
+      if (updateDto.sit_tributaria_cofins !== undefined)
+        updateData.sit_tributaria_cofins = updateDto.sit_tributaria_cofins;
+      if (updateDto.aliquota_cofins !== undefined)
+        updateData.aliquota_cofins = updateDto.aliquota_cofins;
+
+      if (Object.keys(updateData).length > 0) {
+        await this.productNotaFiscalRepository.update(
+          notaFiscal.id,
+          updateData,
+        );
+      }
+
+      if (updateDto.iva_tabela !== undefined) {
+        await this.productIvaItemRepository.delete({
+          notaFiscal: { id: notaFiscal.id },
+        });
+        for (const item of updateDto.iva_tabela) {
+          await this.productIvaItemRepository.save({
+            notaFiscal: { id: notaFiscal.id },
+            estado: item.estado,
+            valor: item.valor,
+          });
+        }
+      }
+
+      this.logger.log(`Product nota fiscal updated: ${uuid}`);
+    } catch (error) {
+      this.logger.error(
+        `Error updating product nota fiscal: ${uuid}: ${error.message}`,
+      );
+      throw new BadRequestException(
+        error.message ?? 'Error updating product nota fiscal',
       );
     }
   }

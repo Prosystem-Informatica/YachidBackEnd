@@ -42,9 +42,11 @@ export class PartnerService {
             throw new BadRequestException('Address not created');
         }
   
+        const { groupId, address: _address, payment_address: _paymentAddress, ...partnerData } = partnerDto;
         const partner = await this.partnerRepository.save({
-            ...partnerDto,
+            ...partnerData,
             address: { id: address.id },
+            group: { id: groupId },
             partner_type: partnerType,
         });
 
@@ -79,80 +81,29 @@ export class PartnerService {
     async getPartners(listPartnersDto: ListPartnersDto): Promise<{ partners: Partner[], total: number }> {
         const uuid = uuidv4();
         try {
-            if(listPartnersDto.branchId) {
-                 return await this.getPartnersByBranch(listPartnersDto.branchId);
-            }else if(listPartnersDto.enterpriseId) {
-                return await this.getPartnersByEnterprise(listPartnersDto.enterpriseId);
+            if (listPartnersDto.groupId) {
+                return await this.getPartnersByGroup(listPartnersDto.groupId);
             }
-            console.log('listPartnersDto', listPartnersDto);
-            throw new BadRequestException('Branch or enterprise not found');
+            throw new BadRequestException('groupId é obrigatório');
 
-        }catch(error) {
+        } catch (error) {
             this.logger.error(`Error getting partners:${uuid}:${error.message}`);
-            console.log('error', error);
             throw new BadRequestException(error.message ?? 'Error getting partners');
         }
     }
-    
 
-
-    async getPartnersByBranch(branchId: string): Promise<{ partners: Partner[], total: number }> {
+    async getPartnersByGroup(groupId: string): Promise<{ partners: Partner[], total: number }> {
         const uuid = uuidv4();
         try {
-           
-            this.logger.log(`Getting partners by branch:${uuid}`);
-
-            const [partners, total] = await this.partnerRepository.findAndCount({ where: { branch: { id: branchId }}});
+            this.logger.log(`Getting partners by group:${uuid}`);
+            const [partners, total] = await this.partnerRepository.findAndCount({
+                where: { group: { id: groupId } },
+                relations: ['address'],
+            });
             return { partners, total };
-
-        }catch(error) {
-            this.logger.error(`Error getting partners by branch:${uuid}:${error.message}`);
+        } catch (error) {
+            this.logger.error(`Error getting partners by group:${uuid}:${error.message}`);
             throw new BadRequestException(error.message);
-        }
-    }
-
-    async getPartnersByEnterprise(enterpriseId: string): Promise<{ partners: any[], total: number }> {
-        const uuid = uuidv4();
-        try {
-            
-            const queryBuilder = this.partnerRepository.createQueryBuilder('partner');
-            queryBuilder.leftJoin('partner.branch', 'branch');
-            queryBuilder.leftJoin('branch.enterprise', 'enterprise');
-            queryBuilder.leftJoin('partner.address', 'address');
-            queryBuilder.where('enterprise.id = :enterpriseId', { enterpriseId });
-            queryBuilder.select([
-                'partner.id',
-                'partner.name',
-                'partner.codigo',
-                'partner.document',
-                'partner.fantasy_name',
-                'partner.main_phone',
-                'address.cep',
-                'address.city',
-                'address.uf',
-                'partner.status',
-            ]);
-            const partners = await queryBuilder.getRawMany();
-            console.log('partners', partners);
-            
-        return {
-            partners: partners.map((partner: any) => ({
-                id: partner.partner_id,
-                name: partner.partner_name,
-                document: partner.partner_document,
-                fantasy_name: partner.partner_fantasy_name,
-                main_phone: partner.partner_main_phone,
-                cep: partner.address_cep,
-                city: partner.address_city,
-                uf: partner.address_uf,
-                status: partner.partner_status,
-                codigo: partner.partner_codigo,
-            })),
-            total: partners.length,
-        }
-        }catch(error) {
-            this.logger.error(`Error getting partners by enterprise:${enterpriseId}:${uuid}:${error.message}`);
-            throw new BadRequestException(error.message ?? 'Error getting partners by enterprise');
         }
     }
 
@@ -175,13 +126,17 @@ export class PartnerService {
         const uuid = uuidv4();
         try {
             this.logger.log(`Updating partner:${uuid}`);
-             await this.partnerRepository.findOneOrFail({ where: { id: partnerId } });
-             
-            await this.partnerRepository.update(partnerId, {
-                ...updatePartnerDto,
-            });
+            await this.partnerRepository.findOneOrFail({ where: { id: partnerId } });
 
-        }catch(error) {
+            const { groupId, ...rest } = updatePartnerDto;
+            const updateData: Record<string, unknown> = { ...rest };
+            if (groupId !== undefined) {
+                updateData.group = { id: groupId };
+            }
+
+            await this.partnerRepository.update(partnerId, updateData);
+
+        } catch (error) {
             this.logger.error(`Error updating partner:${uuid}:${error.message}`);
             throw new BadRequestException(error.message ?? 'Error updating partner');
         }

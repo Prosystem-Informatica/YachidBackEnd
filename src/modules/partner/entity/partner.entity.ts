@@ -1,7 +1,7 @@
 import { BaseEntity } from 'src/config/db/base.entity';
 import { PartnerPersonType, PartnerStatus, PartnerType } from 'src/core/enum/enums';
 import { Address } from 'src/modules/address/entities/address.entity';
-import { Branch } from 'src/modules/branch/entities/branch.entity';
+import { Group } from 'src/modules/group/entities/group.entity';
 import { CarrierPartner } from 'src/modules/carrier-partner/entities/carrier-partner.entity';
 import { Carrier } from 'src/modules/carrier/entities/carrier.entity';
 import { DeliveryAddress } from 'src/modules/delivery-address/entities/delivery-address.entity';
@@ -77,9 +77,9 @@ export class Partner  extends BaseEntity {
     @OneToMany(() => CarrierPartner, (carrierPartner) => carrierPartner.partner)
     carriers: CarrierPartner[];
 
-    @ManyToOne(() => Branch)
-    @JoinColumn({ name: 'branch_id' })
-    branch: Branch;
+    @ManyToOne(() => Group, { nullable: true })
+    @JoinColumn({ name: 'group_id' })
+    group?: Group;
 
     @OneToMany(() => DeliveryAddress, (deliveryAddress) => deliveryAddress.partner)
     deliveryAddresses: DeliveryAddress[];

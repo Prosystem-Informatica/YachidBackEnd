@@ -16,6 +16,7 @@ import { CreateProductStockDto } from './dto/create-product-stock.dto';
 import { UpdateProductStockDto } from './dto/update-product-stock.dto';
 import { CreateProductComponentDto } from './dto/create-product-component.dto';
 import { UpdateProductComponentDto } from './dto/update-product-component.dto';
+import { UpdateProductNotaFiscalDto } from './dto/update-product-nota-fiscal.dto';
 import { ListProductsDto } from './dto/list-products.dto';
 import { AuthGuard } from '../auth/guard/auth.guard';
 
@@ -24,7 +25,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(AuthGuard)
-  @Get()
+  @Get(':groupId')
   async getProducts(@Query() listProductsDto: ListProductsDto) {
     return this.productService.findAll(listProductsDto);
   }
@@ -36,7 +37,7 @@ export class ProductController {
   }
 
   @UseGuards(AuthGuard)
-  @Post()
+  @Post(':groupId')
   async createProduct(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
@@ -83,6 +84,19 @@ export class ProductController {
     return this.productService.createComponent(
       productId,
       createProductComponentDto,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
+  @Patch(':productId/nota-fiscal')
+  async updateProductNotaFiscal(
+    @Param('productId') productId: string,
+    @Body() updateProductNotaFiscalDto: UpdateProductNotaFiscalDto,
+  ): Promise<void> {
+    return this.productService.updateNotaFiscal(
+      productId,
+      updateProductNotaFiscalDto,
     );
   }
 

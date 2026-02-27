@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, IsEmail, IsPhoneNumber, IsBoolean, IsEnum, ValidateNested, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsPhoneNumber, IsBoolean, IsEnum, ValidateNested, IsOptional, IsUUID, IsNotEmpty } from 'class-validator';
 import { PartnerPersonType, PartnerStatus, PartnerType } from 'src/core/enum/enums';
 import { CreateAddressDto } from 'src/modules/address/dto/address.dto';
 import { CreatePaymentAddressDto } from 'src/modules/payment-address/dto/payment-address.dto';
@@ -67,6 +67,10 @@ export class PartnerDto {
 
     @IsBoolean()
     fixed_expenses: boolean;
+
+    @IsOptional()
+    @IsUUID()
+    groupId: string;
 
     @ValidateNested()
     @Type(() => CreateAddressDto)

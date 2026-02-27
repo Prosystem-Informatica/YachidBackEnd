@@ -25,6 +25,7 @@ import { AccountsReceivableModule } from './modules/accounts-receivable/accounts
 import { ProductModule } from './modules/product/product.module';
 import { RepresentativeModule } from './modules/representative/representative.module';
 import { BankModule } from './modules/bank/bank.module';
+import { GroupModule } from './modules/group/group.module';
 
 
 @Module({
@@ -57,6 +58,7 @@ import { BankModule } from './modules/bank/bank.module';
     ProductModule,
     RepresentativeModule,
     BankModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

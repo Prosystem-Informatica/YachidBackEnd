@@ -94,4 +94,7 @@ export class UpdatePartnerDto {
   @IsBoolean()
   fixed_expenses?: boolean;
 
+  @IsOptional()
+  @IsUUID()
+  groupId?: string;
 }
