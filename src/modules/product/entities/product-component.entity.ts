@@ -4,8 +4,8 @@ import { Product } from './product.entity';
 
 @Entity('product_components')
 export class ProductComponent extends BaseEntity {
-  @Column()
-  codigo: string;
+  @Column({ type: 'int', generated: 'increment' })
+  codigo: number;
 
   @Column()
   componente: string;

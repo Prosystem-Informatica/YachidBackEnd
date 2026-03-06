@@ -8,6 +8,10 @@ export class ListEmployeesDto extends BaseListDto {
 
     @IsString()
     @IsOptional()
+    enterpriseId?: string;
+
+    @IsString()
+    @IsOptional()
     name?: string;
 
     @IsString()

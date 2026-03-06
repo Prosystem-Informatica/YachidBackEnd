@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { EmployeeRole } from "../entities/employee.entity";
 
 export enum EmployeeStatus {
@@ -24,15 +24,13 @@ export class CreateEmployeeDto {
     @IsString()
     document: string;
 
-    @IsNotEmpty()
-    @IsEnum({ message: 'Status inválido' })
+    @IsNotEmpty({ message: 'Defina o status do funcionário' })
     status: EmployeeStatus;
 
-    @IsNotEmpty()
-    @IsEnum({ message: 'Defina o cargo do funcionário' })
+    @IsNotEmpty({ message: 'Defina o cargo do funcionário' })
     role: EmployeeRole;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     base64: string;
 }

@@ -12,10 +12,6 @@ import { PartnerPersonType, PartnerStatus, PartnerType } from 'src/core/enum/enu
 export class UpdatePartnerDto {
   @IsOptional()
   @IsString()
-  codigo?: string;
-
-  @IsOptional()
-  @IsString()
   document?: string;
 
   @IsOptional()

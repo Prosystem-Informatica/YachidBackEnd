@@ -12,8 +12,6 @@ import { CreateAddressDto } from 'src/modules/address/dto/address.dto';
 import { TipoComissao } from 'src/core/enum/enums';
 
 export class CreateRepresentativeDto {
-  @IsString()
-  codigo: string;
 
   @IsString()
   nome: string;

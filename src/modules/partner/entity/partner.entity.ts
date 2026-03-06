@@ -10,8 +10,8 @@ import { Entity, Column, OneToOne, JoinColumn, ManyToMany, JoinTable, OneToMany,
 @Entity('partners')
 export class Partner  extends BaseEntity {
 
-    @Column()
-    codigo: string;
+    @Column({ type: 'int', generated: 'increment' })
+    codigo: number;
 
     @Column()
     document: string;

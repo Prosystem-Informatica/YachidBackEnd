@@ -3,7 +3,7 @@ import { BaseEntity } from "src/config/db/base.entity";
 import { Address } from "src/modules/address/entities/address.entity";
 import { Branch } from "src/modules/branch/entities/branch.entity";
 import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.entity";
-import { Group } from "src/modules/group/entities/group.entity";
+import { GroupEnterprise } from "src/modules/group-enterprise/entity/group-enterprise.entity";
 import { Photo } from "src/modules/photos/entities/photo.entity";
 import {
     Entity,
@@ -52,9 +52,11 @@ import {
     @JoinColumn({ name: "entrepreneur_id" })
     entrepreneur!: Entrepreneur;
 
-    @ManyToOne(() => Group, (group) => group.enterprises, { eager: true })
-    @JoinColumn({ name: "group_id" })
-    group!: Group;
+    @OneToMany(
+      () => GroupEnterprise,
+      (groupEnterprise) => groupEnterprise.enterprise,
+    )
+    groupEnterprises!: GroupEnterprise[];
 
     @OneToMany(() => Branch, (branch) => branch.enterprise)
     branches!: Branch[];

@@ -28,6 +28,7 @@ import { ProductIvaItem } from "src/modules/product/entities/product-iva-item.en
 import { Representative } from "src/modules/representative/entities/representative.entity";
 import { Bank } from "src/modules/bank/entities/bank.entity";
 import { Group } from "src/modules/group/entities/group.entity";
+import { GroupEnterprise } from "src/modules/group-enterprise/entity/group-enterprise.entity";
 
 
 export enum EDatabase {
@@ -46,7 +47,7 @@ export const dbYachidConfig = registerAs('databaseYachid', () => ({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'yachid',
   port: parseInt(process.env.DB_PORT || '5432', 10),
-  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch, Partner, PaymentAddress, Carrier, CarrierPartner, PartnerCreditConfig, DeliveryAddress, AccountsPayable, AccountsReceivable, Product, ProductComponent, ProductStock, ProductStockAddress, ProductNotaFiscal, ProductIvaItem, Representative, Bank, Group],
+  entities: [Employee, Enterprise, Address, Accounting, RevenueTaxDetails, Photo, Entrepreneur, User, TaxRegime, Branch, Partner, PaymentAddress, Carrier, CarrierPartner, PartnerCreditConfig, DeliveryAddress, AccountsPayable, AccountsReceivable, Product, ProductComponent, ProductStock, ProductStockAddress, ProductNotaFiscal, ProductIvaItem, Representative, Bank, Group, GroupEnterprise],
   logging: false,
   synchronize: true,
 }));

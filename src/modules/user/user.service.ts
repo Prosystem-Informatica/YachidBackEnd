@@ -4,6 +4,7 @@ import { EDatabase } from 'src/config/db/database.config';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -30,5 +31,14 @@ export class UserService {
             this.Logger.error(`Error creating user: ${error.message}`);
             throw new BadRequestException(error.message ?? 'Error creating user');
         }
+    }
+
+    async updateEmail(userId: string, email: string) {
+        await this.userRepository.update(userId, { email });
+    }
+
+    async updatePassword(userId: string, password: string) {
+        const hashed = bcrypt.hashSync(password, 10);
+        await this.userRepository.update(userId, { password: hashed });
     }
 }

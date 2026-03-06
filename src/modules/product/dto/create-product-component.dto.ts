@@ -2,9 +2,6 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateProductComponentDto {
   @IsString()
-  codigo: string;
-
-  @IsString()
   componente: string;
 
   @IsOptional()

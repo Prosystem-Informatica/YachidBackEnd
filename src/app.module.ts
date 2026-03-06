@@ -26,6 +26,8 @@ import { ProductModule } from './modules/product/product.module';
 import { RepresentativeModule } from './modules/representative/representative.module';
 import { BankModule } from './modules/bank/bank.module';
 import { GroupModule } from './modules/group/group.module';
+import { GroupEnterpriseModule } from './modules/group-enterprise/group-enterprise.module';
+import { CepModule } from './modules/cep/cep.module';
 
 
 @Module({
@@ -59,6 +61,8 @@ import { GroupModule } from './modules/group/group.module';
     RepresentativeModule,
     BankModule,
     GroupModule,
+    GroupEnterpriseModule,
+    CepModule,
   ],
   controllers: [AppController],
   providers: [AppService],

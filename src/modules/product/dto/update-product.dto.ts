@@ -10,10 +10,6 @@ import { TipoCusto } from 'src/core/enum/enums';
 export class UpdateProductDto {
   @IsOptional()
   @IsString()
-  codigo?: string;
-
-  @IsOptional()
-  @IsString()
   ultimo_codigo?: string;
 
   @IsOptional()

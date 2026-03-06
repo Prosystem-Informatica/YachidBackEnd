@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Employee } from './entities/employee.entity';
 import { EDatabase } from 'src/config/db/database.config';
+import * as crypto from 'crypto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { CreateUserDto } from '../user/dto/createUser.dto';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { UserService } from '../user/user.service';
 import { ListEmployeesDto } from './dto/list-employees.dto';
 import { UserRole } from '../user/entities/user.entity';
@@ -19,6 +20,32 @@ export class EmployeeService {
 
   private readonly Logger = new Logger(EmployeeService.name);
 
+  async findOne(id: string) {
+    const employee = await this.employeeRepository.findOne({
+      where: { id },
+      relations: { user: true, branch: true },
+    });
+    if (!employee) {
+      throw new BadRequestException('Funcionário não encontrado');
+    }
+    return employee;
+  }
+
+  async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
+    const employee = await this.findOne(id);
+    const { email, base64, ...employeeData } = updateEmployeeDto;
+
+    if (Object.keys(employeeData).length > 0) {
+      await this.employeeRepository.update(id, employeeData);
+    }
+
+    if (email !== undefined && employee.user) {
+      await this.userService.updateEmail(employee.user.id, email);
+    }
+
+    return this.findOne(id);
+  }
+
   async findOneByUserId(id: string) {
     return await this.employeeRepository.findOne({
       where: { user: { id: id } },
@@ -30,14 +57,17 @@ export class EmployeeService {
 
   async createEmployee(
     createEmployeeDto: CreateEmployeeDto,
-    createUserDto: CreateUserDto,
     branchId: string,
   ) {
     try {
 
       this.Logger.log(`Creating User for branch ${branchId}`);
 
-      const user = await this.userService.createUser(createUserDto, UserRole.EMPLOYEE);
+      const tempPassword = crypto.randomBytes(12).toString('hex');
+      const user = await this.userService.createUser(
+        { email: createEmployeeDto.email, password: tempPassword },
+        UserRole.EMPLOYEE,
+      );
 
       if (!user) {
         throw new BadRequestException('Error creating user');
@@ -98,12 +128,23 @@ export class EmployeeService {
     try {
       this.Logger.log(`Getting employees`);
 
-      const { branchId, name, document, role, limit, offset } = listEmployeesDto;
+      const { branchId, enterpriseId, name, document, role, limit, offset } = listEmployeesDto;
 
       const queryBuilder = this.employeeRepository.createQueryBuilder('employee');
 
-      if(branchId) {
+      if (branchId) {
+        queryBuilder
+          .leftJoin('employee.branch', 'branch')
+          .addSelect('branch.id', 'branchId')
+          .addSelect('branch.name', 'branchName');
         queryBuilder.andWhere('employee.branch_id = :branchId', { branchId });
+      } else if (enterpriseId) {
+        queryBuilder
+          .leftJoin('employee.branch', 'branch')
+          .leftJoin('branch.enterprise', 'enterprise')
+          .addSelect('branch.id', 'branchId')
+          .addSelect('branch.name', 'branchName');
+        queryBuilder.andWhere('enterprise.id = :enterpriseId', { enterpriseId });
       }
 
       if(name) {

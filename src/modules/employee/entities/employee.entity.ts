@@ -11,13 +11,13 @@ import * as createEmployeeDto from "../dto/create-employee.dto";
 import { Photo } from "src/modules/photos/entities/photo.entity";
 import { User } from "src/modules/user/entities/user.entity";
 import { Branch } from "src/modules/branch/entities/branch.entity";
+import { Entrepreneur } from "src/modules/entrepreneur/entities/entrepreneur.entity";
 
 
 export enum EmployeeRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
-  
   @Entity("employees")
   export class Employee {
     @PrimaryGeneratedColumn("uuid")
@@ -41,12 +41,16 @@ export enum EmployeeRole {
     @ManyToOne(() => Branch, (branch) => branch.employees, {  eager: true  })
     @JoinColumn({ name: "branch_id" })
     branch!: Branch;
-  
+
+    @ManyToOne(() => Entrepreneur)
+    @JoinColumn({ name: "entrepreneur_id" })
+    entrepreneur!: Entrepreneur;
+
     @CreateDateColumn({ type: "timestamp" })
     created_at!: string;
 
     @OneToOne(() => Photo)
-    photo: Photo;
+    photo?: Photo;
 
     @OneToOne(() => User)
     @JoinColumn({ name: "user_id" })

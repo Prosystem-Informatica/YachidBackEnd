@@ -8,8 +8,8 @@ import { Group } from 'src/modules/group/entities/group.entity';
 
 @Entity('products')
 export class Product extends BaseEntity {
-  @Column()
-  codigo: string;
+  @Column({ type: 'int', generated: 'increment' })
+  codigo: number;
 
   @Column({ nullable: true })
   ultimo_codigo: string;

@@ -44,14 +44,20 @@ export class ProductService {
     const uuid = uuidv4();
     try {
       this.logger.log(`Getting products: ${uuid}`);
+      if (!listProductsDto.groupId) {
+        throw new BadRequestException('groupId é obrigatório');
+      }
 
       const queryBuilder = this.productRepository
         .createQueryBuilder('product')
         .leftJoinAndSelect('product.stocks', 'stocks')
-        .leftJoinAndSelect('stocks.address', 'address');
+        .leftJoinAndSelect('stocks.address', 'address')
+        .where('product.group_id = :groupId', {
+          groupId: listProductsDto.groupId,
+        });
 
       if (listProductsDto.search) {
-        queryBuilder.where(
+        queryBuilder.andWhere(
           '(product.produto ILIKE :search OR product.codigo ILIKE :search OR product.cod_barras ILIKE :search)',
           { search: `%${listProductsDto.search}%` },
         );
@@ -105,13 +111,13 @@ export class ProductService {
     }
   }
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(groupId: string, createProductDto: CreateProductDto): Promise<Product> {
     const uuid = uuidv4();
     try {
       this.logger.log(`Creating product: ${uuid}`);
 
       const product = this.productRepository.create({
-        codigo: createProductDto.codigo,
+        group: { id: groupId },
         ultimo_codigo: createProductDto.ultimo_codigo,
         penultimo_codigo: createProductDto.penultimo_codigo,
         linha: createProductDto.linha,
@@ -349,7 +355,6 @@ export class ProductService {
 
       const componentData: DeepPartial<ProductComponent> = {
         product: { id: productId },
-        codigo: createProductComponentDto.codigo,
         componente: createProductComponentDto.componente,
         unidade: createProductComponentDto.unidade ?? undefined,
         prc_custo: createProductComponentDto.prc_custo ?? 0,
@@ -486,8 +491,6 @@ export class ProductService {
       }
 
       const updateData: Partial<ProductComponent> = {};
-      if (updateProductComponentDto.codigo !== undefined)
-        updateData.codigo = updateProductComponentDto.codigo;
       if (updateProductComponentDto.componente !== undefined)
         updateData.componente = updateProductComponentDto.componente;
       if (updateProductComponentDto.unidade !== undefined)

@@ -9,6 +9,7 @@ import { BranchModule } from '../branch/branch.module';
 import { RevenueTaxDetailsModule } from '../revenue-tax-details/revenue-tax-details.module';
 import { TaxRegimeModule } from '../tax-regime/tax-regime.module';
 import { GroupModule } from '../group/group.module';
+import { GroupEnterpriseModule } from '../group-enterprise/group-enterprise.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { GroupModule } from '../group/group.module';
     forwardRef(() => BranchModule),
     forwardRef(() => RevenueTaxDetailsModule),
     forwardRef(() => TaxRegimeModule),
-    forwardRef(() => GroupModule)
+    forwardRef(() => GroupModule),
+    forwardRef(() => GroupEnterpriseModule)
   ],
   controllers: [EnterpriseController],
   providers: [EnterpriseService]

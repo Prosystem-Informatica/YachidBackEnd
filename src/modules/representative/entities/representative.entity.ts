@@ -10,8 +10,8 @@ import {
 
 @Entity('representatives')
 export class Representative extends BaseEntity {
-  @Column()
-  codigo: string;
+  @Column({ type: 'int', generated: 'increment' })
+  codigo: number;
 
   @Column()
   nome: string;

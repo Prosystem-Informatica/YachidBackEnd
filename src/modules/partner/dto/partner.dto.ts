@@ -7,9 +7,6 @@ import { CreatePaymentAddressDto } from 'src/modules/payment-address/dto/payment
 export class PartnerDto {
 
     @IsString()
-    codigo: string;
-
-    @IsString()
     document: string;
 
     @IsString()

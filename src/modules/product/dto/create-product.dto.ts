@@ -11,9 +11,6 @@ import { TipoCusto } from 'src/core/enum/enums';
 import { CreateProductStockDto } from './create-product-stock.dto';
 
 export class CreateProductDto {
-  @IsString()
-  codigo: string;
-
   @IsOptional()
   @IsString()
   ultimo_codigo?: string;

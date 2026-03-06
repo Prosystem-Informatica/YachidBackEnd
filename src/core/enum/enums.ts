@@ -9,8 +9,8 @@ export enum PartnerType {
 }
 
 export enum PartnerStatus {
-    ATIVO = 'Ativo',
-    INATIVO = 'Inativo',
+    ATIVO = 'ACTIVE',
+    INATIVO = 'INACTIVE',
 }
 
 export enum Type {
@@ -31,5 +31,10 @@ export enum TipoComissao {
     CONTAS_A_RECEBER_BAIXADO = 'CONTAS_A_RECEBER_BAIXADO',
     NOTA_FISCAL = 'NOTA_FISCAL',
     SEM_COMISSAO = 'SEM_COMISSAO',
+}
+
+export enum LayoutRemessa {
+    CNAB_240 = 'CNAB_240',
+    CNAB_400 = 'CNAB_400',
 }
 

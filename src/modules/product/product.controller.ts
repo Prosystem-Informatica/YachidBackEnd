@@ -25,7 +25,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(AuthGuard)
-  @Get(':groupId')
+  @Get()
   async getProducts(@Query() listProductsDto: ListProductsDto) {
     return this.productService.findAll(listProductsDto);
   }
@@ -38,8 +38,11 @@ export class ProductController {
 
   @UseGuards(AuthGuard)
   @Post(':groupId')
-  async createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  async createProduct(
+    @Param('groupId') groupId: string,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    return this.productService.create(groupId, createProductDto);
   }
 
   @UseGuards(AuthGuard)

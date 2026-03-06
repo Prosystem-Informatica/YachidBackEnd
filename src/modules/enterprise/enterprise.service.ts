@@ -10,6 +10,7 @@ import { RevenueTaxDetailsService } from '../revenue-tax-details/revenue-tax-det
 import { TaxRegimeService } from '../tax-regime/tax-regime.service';
 import { EnterpriseRegime } from '../tax-regime/dto/tax-regime.dto';
 import { GroupService } from '../group/group.service';
+import { GroupEnterpriseService } from '../group-enterprise/group-enterprise.service';
 
 
 @Injectable()
@@ -21,7 +22,8 @@ export class EnterpriseService {
     private readonly branchService: BranchService,
     private readonly revenueTaxDetailsService: RevenueTaxDetailsService,
     private readonly taxRegimeService: TaxRegimeService,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    private readonly groupEnterpriseService: GroupEnterpriseService
 ) {
     }
 
@@ -32,14 +34,27 @@ export class EnterpriseService {
 
             this.Logger.log(`Creating enterprise for entrepreneur ${entrepreneurId}`);
 
+            const group = await this.groupService.create({name:'Grupo' + createEnterpriseDto.fantasy_name});
 
-            const enterprise = this.enterpriseRepository.create({...createEnterpriseDto, entrepreneur: { id: entrepreneurId }});
+            if(!group) {
+                throw new BadRequestException('Group not created');
+            }
+             
+            const enterprise = this.enterpriseRepository.create({
+                ...createEnterpriseDto,
+                entrepreneur: { id: entrepreneurId },
+            });
 
             if(!enterprise) {
                 throw new BadRequestException('Enterprise not created');
             }
 
             await this.enterpriseRepository.save(enterprise);
+            
+            await this.groupEnterpriseService.linkEnterpriseToGroup({
+                groupId: group.id,
+                enterpriseId: enterprise.id,
+            });
 
             this.Logger.log(`Enterprise created: ${enterprise}`);
 
@@ -89,7 +104,7 @@ export class EnterpriseService {
         try {
             return this.enterpriseRepository.find({ 
                 where: { entrepreneur: { id: entrepreneurId } },
-                relations: ['group'],
+                relations: ['groupEnterprises', 'groupEnterprises.group'],
                
             });
         } catch (e) {

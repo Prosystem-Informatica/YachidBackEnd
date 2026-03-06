@@ -10,10 +10,6 @@ import { TipoComissao } from 'src/core/enum/enums';
 export class UpdateRepresentativeDto {
   @IsOptional()
   @IsString()
-  codigo?: string;
-
-  @IsOptional()
-  @IsString()
   nome?: string;
 
   @IsOptional()
